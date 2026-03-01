@@ -5,7 +5,7 @@ import { ProjectsGrid } from "@/components/projects/ProjectsGrid";
 import { SectionTitle } from "@/components/shared/SectionTitle";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
 
-export const revalidate = 1800;
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Projects",

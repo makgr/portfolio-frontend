@@ -4,7 +4,7 @@ import type { Service } from "@/types/service";
 
 export async function getServices(): Promise<Service[]> {
   const res = await apiFetch<ApiResponse<Service[]>>("/services", {
-    revalidate: 3600,
+    revalidate: 0,
     tags: ["services"],
   });
   return res.data ?? [];

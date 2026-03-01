@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getProjectBySlug, getProjects } from "@/lib/api/projects";
 import { ProjectDetail } from "@/components/projects/ProjectDetail";
 
-export const revalidate = 1800;
+export const revalidate = 0;
 
 interface Props {
   params: Promise<{ slug: string }>;

@@ -11,7 +11,7 @@ import { TrainingCerts } from "@/components/about/TrainingCerts";
 import { SkillsGrid } from "@/components/about/SkillsGrid";
 import { Divider } from "@/components/shared/Divider";
 
-export const revalidate = 3600;
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "About",

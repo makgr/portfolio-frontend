@@ -16,7 +16,7 @@ export async function getBlogPosts(
   const query = params.toString() ? `?${params.toString()}` : "";
 
   const res = await apiFetch<PaginatedApiResponse<BlogPost>>(`/blog-posts${query}`, {
-    revalidate: cacheable ? 300 : false,
+    revalidate: 0,
     tags: cacheable ? ["blog-posts"] : undefined,
   });
 
@@ -25,7 +25,7 @@ export async function getBlogPosts(
 
 export async function getFeaturedBlogPosts(): Promise<BlogPost[]> {
   const res = await apiFetch<ApiResponse<BlogPost[]>>("/blog-posts/featured", {
-    revalidate: 600,
+    revalidate: 0,
     tags: ["blog-posts", "blog-posts-featured"],
   });
   return res.data ?? [];

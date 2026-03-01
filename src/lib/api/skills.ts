@@ -18,7 +18,7 @@ export async function getSkills(options?: {
   const query = params.toString() ? `?${params.toString()}` : "";
 
   const res = await apiFetch<SkillsApiResponse>(`/skills${query}`, {
-    revalidate: 3600,
+    revalidate: 0,
     tags: ["skills"],
   });
 

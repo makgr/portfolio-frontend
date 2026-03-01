@@ -12,7 +12,7 @@ export async function getCategories(options?: {
   const query = params.toString() ? `?${params.toString()}` : "";
 
   const res = await apiFetch<ApiResponse<Category[]>>(`/categories${query}`, {
-    revalidate: 3600,
+    revalidate: 0,
     tags: ["categories"],
   });
   return res.data ?? [];
@@ -22,7 +22,7 @@ export async function getCategoriesByType(
   type: "project" | "blog"
 ): Promise<Category[]> {
   const res = await apiFetch<ApiResponse<Category[]>>(`/categories/type/${type}`, {
-    revalidate: 3600,
+    revalidate: 0,
     tags: ["categories", `categories-${type}`],
   });
   return res.data ?? [];

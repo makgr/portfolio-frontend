@@ -16,7 +16,7 @@ import { TestimonialsCarousel } from "@/components/home/TestimonialsCarousel";
 import { BlogPreview } from "@/components/home/BlogPreview";
 import { NewsletterCTA } from "@/components/home/NewsletterCTA";
 
-export const revalidate = 600;
+export const revalidate = 0;
 
 export default async function HomePage() {
   const [profile, featuredProjects, testimonials, featuredPosts, skillsData, services, experiences] =
