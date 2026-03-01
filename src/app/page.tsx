@@ -51,7 +51,7 @@ export default async function HomePage() {
           <p className="text-lg">Could not load profile data.</p>
           <p className="text-sm mt-2" style={{ color: "var(--text-muted)" }}>
             Make sure the Laravel API is running at{" "}
-            {process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/personalportfolio/public"}
+            {process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/personalportfolio/public/api/v1"}
           </p>
         </div>
       </div>

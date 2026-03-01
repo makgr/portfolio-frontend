@@ -1,6 +1,6 @@
 import { ApiError } from "@/types/api";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/personalportfolio/public";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/personalportfolio/public/api/v1";
 
 export type FetchOptions = Omit<RequestInit, "next"> & {
   revalidate?: number | false;
@@ -17,7 +17,7 @@ export async function apiFetch<T>(
   if (revalidate !== undefined) nextOptions.revalidate = revalidate;
   if (tags) nextOptions.tags = tags;
 
-  const url = `${API_BASE}/api/v1${path}`;
+  const url = `${API_BASE}${path}`;
 
   const res = await fetch(url, {
     ...fetchOptions,
