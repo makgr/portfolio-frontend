@@ -1,0 +1,30 @@
+export interface Training {
+  id: number;
+  title: string;
+  slug?: string;
+  provider?: string;
+  type?: string;
+  category?: string;
+  description?: string;
+  certificate_url?: string | null;
+  credential_id?: string | null;
+  start_date?: string;
+  end_date?: string | null;
+  duration_hours?: number | null;
+  status?: "completed" | "in_progress" | "planned";
+  score?: string | null;
+  skills_gained?: string[];
+  instructor?: string | null;
+  rating?: number | null;
+  notes?: string | null;
+  icon?: string | null;
+  color?: string | null;
+  order?: number;
+  is_featured?: boolean;
+  is_active?: boolean;
+  formatted_duration?: string;
+  status_badge_color?: string;
+  category_badge_color?: string;
+  type_badge_color?: string;
+  rating_stars?: string;
+}
