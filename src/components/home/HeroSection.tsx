@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Profile } from "@/types/profile";
 import { Button } from "@/components/shared/Button";
 import { SocialLinks } from "@/components/shared/SocialLinks";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface HeroSectionProps {
   profile: Profile;
@@ -142,7 +143,7 @@ export function HeroSection({ profile }: HeroSectionProps) {
                 }}
               >
                 <Image
-                  src={profile.hero_image_url ?? profile.avatar_url ?? ""}
+                  src={resolveImageUrl(profile.hero_image_url ?? profile.avatar_url)}
                   alt={profile.full_name}
                   fill
                   sizes="(min-width: 1024px) 288px, 224px"

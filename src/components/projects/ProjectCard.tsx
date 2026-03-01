@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import type { Project } from "@/types/project";
 import { Badge } from "@/components/shared/Badge";
 import { cn } from "@/lib/utils/cn";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface ProjectCardProps {
   project: Project;
@@ -44,7 +45,7 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
           <div className="relative aspect-video overflow-hidden">
             {project.featured_image ? (
               <Image
-                src={project.featured_image}
+                src={resolveImageUrl(project.featured_image)}
                 alt={project.title}
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

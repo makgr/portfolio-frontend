@@ -5,6 +5,7 @@ import { Avatar } from "@/components/shared/Avatar";
 import { TableOfContents } from "./TableOfContents";
 import { ReadingProgressBar } from "./ReadingProgressBar";
 import { formatDateFull } from "@/lib/utils/formatDate";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface BlogDetailProps {
   post: BlogPost;
@@ -23,7 +24,7 @@ export function BlogDetail({ post }: BlogDetailProps) {
             style={{ border: "1px solid var(--border-default)" }}
           >
             <Image
-              src={post.featured_image}
+              src={resolveImageUrl(post.featured_image)}
               alt={post.title}
               fill
               sizes="100vw"

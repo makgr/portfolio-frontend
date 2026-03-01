@@ -3,6 +3,7 @@ import type { Profile } from "@/types/profile";
 import { SocialLinks } from "@/components/shared/SocialLinks";
 import { Button } from "@/components/shared/Button";
 import { AnimatedSection } from "@/components/shared/AnimatedSection";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface ProfileBioProps {
   profile: Profile;
@@ -28,7 +29,7 @@ export function ProfileBio({ profile }: ProfileBioProps) {
               }}
             >
               <Image
-                src={profile.avatar_url ?? profile.hero_image_url ?? ""}
+                src={resolveImageUrl(profile.avatar_url ?? profile.hero_image_url)}
                 alt={profile.full_name}
                 fill
                 sizes="160px"

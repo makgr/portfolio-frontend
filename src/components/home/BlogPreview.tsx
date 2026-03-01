@@ -8,6 +8,7 @@ import { AnimatedSection, staggerContainer, staggerItem } from "@/components/sha
 import { Badge } from "@/components/shared/Badge";
 import { formatDateShort } from "@/lib/utils/formatDate";
 import { motion } from "framer-motion";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface BlogPreviewProps {
   posts: BlogPost[];
@@ -61,7 +62,7 @@ export function BlogPreview({ posts }: BlogPreviewProps) {
                   {post.featured_image && (
                     <div className="relative aspect-video overflow-hidden">
                       <Image
-                        src={post.featured_image}
+                        src={resolveImageUrl(post.featured_image)}
                         alt={post.title}
                         fill
                         sizes="(min-width: 768px) 33vw, 100vw"

@@ -4,6 +4,7 @@ import type { BlogPost } from "@/types/blog";
 import { Badge } from "@/components/shared/Badge";
 import { Avatar } from "@/components/shared/Avatar";
 import { formatDateFull } from "@/lib/utils/formatDate";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -28,7 +29,7 @@ export function BlogCard({ post }: BlogCardProps) {
         {post.featured_image && (
           <div className="relative aspect-video overflow-hidden">
             <Image
-              src={post.featured_image}
+              src={resolveImageUrl(post.featured_image)}
               alt={post.title}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"

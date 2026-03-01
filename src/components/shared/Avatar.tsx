@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { cn } from "@/lib/utils/cn";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface AvatarProps {
   src?: string | null;
@@ -48,7 +49,7 @@ export function Avatar({ src, alt, size = 48, className, fallback }: AvatarProps
       style={{ width: px, height: px }}
     >
       <Image
-        src={src}
+        src={resolveImageUrl(src)}
         alt={alt}
         fill
         sizes={`${px}px`}

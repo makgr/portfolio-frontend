@@ -6,6 +6,7 @@ import { TechBadge } from "./TechBadge";
 import { ProjectLinks } from "./ProjectLinks";
 import { ProjectImageGallery } from "./ProjectImageGallery";
 import { formatDateShort } from "@/lib/utils/formatDate";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface ProjectDetailProps {
   project: Project;
@@ -20,7 +21,7 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
           style={{ border: "1px solid var(--border-default)" }}
         >
           <Image
-            src={project.featured_image}
+            src={resolveImageUrl(project.featured_image)}
             alt={project.title}
             fill
             sizes="100vw"

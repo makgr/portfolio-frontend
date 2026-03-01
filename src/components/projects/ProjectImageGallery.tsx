@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface ProjectImageGalleryProps {
   images: string[];
@@ -47,7 +48,7 @@ export function ProjectImageGallery({ images, title }: ProjectImageGalleryProps)
             aria-label={`View image ${i + 1} of ${images.length}`}
           >
             <Image
-              src={img}
+              src={resolveImageUrl(img)}
               alt={`${title} — image ${i + 1}`}
               fill
               sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
@@ -78,7 +79,7 @@ export function ProjectImageGallery({ images, title }: ProjectImageGalleryProps)
             >
               <div className="relative aspect-video rounded-xl overflow-hidden">
                 <Image
-                  src={images[lightboxIndex]}
+                  src={resolveImageUrl(images[lightboxIndex])}
                   alt={`${title} — image ${lightboxIndex + 1}`}
                   fill
                   sizes="100vw"
