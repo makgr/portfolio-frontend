@@ -1,5 +1,6 @@
+"use client";
+
 import type { Project } from "@/types/project";
-import { ExternalLink } from "@/components/shared/ExternalLink";
 
 interface ProjectLinksProps {
   project: Project;
