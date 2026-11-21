@@ -16,7 +16,7 @@ All content comes from a separate Laravel backend:
 
 ## Requirements
 
-- Node.js 20+
+- Node.js 22.12+ (26 LTS recommended)
 - A running copy of the [backend API](https://github.com/makgr/personalportfolio)
 
 ## Getting started
