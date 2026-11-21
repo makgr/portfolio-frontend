@@ -178,6 +178,23 @@
   .socials a { color: var(--muted); text-decoration: none; padding: 10px 0; }
   .socials a:hover { color: var(--amber); }
 
+  /* ---------- services page ---------- */
+  .svc-page-head { padding: 72px 0 56px; }
+  .svc-page-head .h2 { font-size: clamp(44px, 6.4vw, 96px); text-wrap: balance; }
+  .lede { margin: 22px 0 0; color: var(--muted); font-size: 18px; line-height: 1.6; max-width: 52ch; }
+  .lede a { color: var(--amber); }
+  .svc-page-list { padding-bottom: 40px; }
+  .svc-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .svc-item { display: flex; flex-direction: column; gap: 28px; padding: 36px 40px; scroll-margin-top: 100px; }
+  .svc-item .fname { font: 13px var(--font-geist-mono), monospace; color: var(--com); }
+  .svc-item h2 { margin: 12px 0 14px; font: 600 clamp(28px, 3vw, 40px)/1.08 var(--font-geist), sans-serif; letter-spacing: -.04em; }
+  .svc-item p { margin: 0 0 14px; color: var(--muted); font-size: 16px; line-height: 1.65; max-width: 60ch; }
+  /* pinned to the bottom so buttons line up across a row */
+  .svc-side { display: flex; flex-direction: column; align-items: flex-start; gap: 22px; margin-top: auto; }
+  .svc-side ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font: 14px var(--font-geist-mono), monospace; color: #c9d3e0; }
+  .svc-side li::before { content: "✓"; color: var(--amber); margin-right: 10px; }
+  .svc-side .price { margin: 0; font: 600 20px var(--font-geist), sans-serif; color: var(--text-primary); }
+
   @media (max-width: 1100px) {
     .hero-intro { top: 120px; }
     .hero-proj { top: 24%; }
@@ -189,6 +206,7 @@
     .svc { grid-template-columns: 280px minmax(0, 1fr); }
   }
   @media (max-width: 900px) {
+    .svc-list { grid-template-columns: minmax(0, 1fr); }
     .hero { height: auto; margin-top: -80px; padding: 104px 20px 40px; display: flex; flex-direction: column; gap: 24px; }
     .hero-grid, .plus-layer, .ghost, .halo { display: none; }
     .hero-intro, .hero-name, .hero-proj, .hero-talk, .portrait { position: relative; left: auto; right: auto; top: auto; bottom: auto; transform: none; max-width: none; }
@@ -216,6 +234,8 @@
     .tree { border-right: 0; border-bottom: 1px solid var(--line); }
     .pane { padding: 28px 22px; }
     .review { width: 300px; }
+    .svc-item { padding: 26px 22px; }
+    .svc-page-head { padding: 40px 0 36px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .rise { opacity: 1 !important; transform: none !important; transition: none !important; }

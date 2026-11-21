@@ -18,8 +18,8 @@ export function Header() {
           <Link href="/" className="logo" aria-label="Go to homepage">
             &lt;mak <span>/</span>&gt;
           </Link>
-          {/* Home is the logo and Contact is the "Let's talk" button */}
-          {NAV_LINKS.filter((l) => l.href !== "/" && l.href !== "/contact").map((link) => (
+          {/* Home is the logo */}
+          {NAV_LINKS.filter((l) => l.href !== "/").map((link) => (
             <Link
               key={link.href}
               href={link.href}
