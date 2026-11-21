@@ -14,17 +14,8 @@ export function BlogCard({ post }: BlogCardProps) {
   return (
     <Link href={`/blog/${post.slug}`} className="block group h-full">
       <article
-        className="h-full flex flex-col overflow-hidden rounded-[var(--radius-card)] transition-all duration-300"
-        style={{
-          background: "var(--bg-tertiary)",
-          border: "1px solid var(--border-default)",
-        }}
-        onMouseEnter={(e) => {
-          (e.currentTarget as HTMLElement).style.borderColor = "var(--border-hover)";
-        }}
-        onMouseLeave={(e) => {
-          (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)";
-        }}
+        className="h-full flex flex-col overflow-hidden rounded-[var(--radius-card)] transition-all duration-300 border border-[var(--border-default)] hover:border-[var(--border-hover)]"
+        style={{ background: "var(--bg-tertiary)" }}
       >
         {post.featured_image && (
           <div className="relative aspect-video overflow-hidden">
