@@ -1,57 +1,66 @@
-import type { Metadata } from "next";
 import { API_BASE } from "@/lib/api/client";
 import { getProfile } from "@/lib/api/profile";
 import { getFeaturedProjects } from "@/lib/api/projects";
 import { getFeaturedTestimonials } from "@/lib/api/testimonials";
-import { getFeaturedBlogPosts } from "@/lib/api/blog";
 import { getSkills } from "@/lib/api/skills";
 import { getServices } from "@/lib/api/services";
 import { getExperiences } from "@/lib/api/experiences";
-import { HeroSection } from "@/components/home/HeroSection";
-import { StatsBar } from "@/components/home/StatsBar";
+import { getEducation } from "@/lib/api/education";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
+import type { Project } from "@/types/project";
+import { HeroSection, type HeroSlide } from "@/components/home/HeroSection";
+import { AboutBento } from "@/components/home/AboutBento";
 import { FeaturedProjects } from "@/components/home/FeaturedProjects";
-import { SkillsSnapshot } from "@/components/home/SkillsSnapshot";
-import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { ExperiencePreview } from "@/components/home/ExperiencePreview";
+import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { TestimonialsCarousel } from "@/components/home/TestimonialsCarousel";
-import { BlogPreview } from "@/components/home/BlogPreview";
-import { NewsletterCTA } from "@/components/home/NewsletterCTA";
+import { ContactCTA } from "@/components/home/ContactCTA";
+import "@/components/home/home.css";
 
 export const revalidate = 0;
 
+// shortcut: placeholder portrait until the backend serves profile.hero_cutout_url
+const FALLBACK_PORTRAIT = "/images/hero-portrait.jpg";
+const ROLES = ["Laravel back ends", "React and Vue front ends", "Flutter mobile apps", "REST APIs that scale"];
+
+/** File name for the hero's project card, e.g. "e-commerce-platform.tsx". */
+function projectFile(p: Project) {
+  const stack = (p.tech_stack ?? []).join(" ").toLowerCase();
+  const ext = stack.includes("flutter") ? "dart"
+    : stack.includes("laravel") || stack.includes("php") ? "php"
+    : stack.includes("vue") ? "vue"
+    : stack.includes("react") || stack.includes("next") ? "tsx"
+    : "ts";
+  return `${p.slug}.${ext}`;
+}
+
 export default async function HomePage() {
-  const [profile, featuredProjects, testimonials, featuredPosts, skillsData, services, experiences] =
+  const [profile, featuredProjects, testimonials, skillsData, services, experiences, education] =
     await Promise.allSettled([
       getProfile(),
       getFeaturedProjects(),
       getFeaturedTestimonials(),
-      getFeaturedBlogPosts(),
       getSkills(),
       getServices(),
       getExperiences(),
+      getEducation(),
     ]);
 
   const p = profile.status === "fulfilled" ? profile.value : null;
   const projects = featuredProjects.status === "fulfilled" ? featuredProjects.value : [];
   const reviews = testimonials.status === "fulfilled" ? testimonials.value : [];
-  const posts = featuredPosts.status === "fulfilled" ? featuredPosts.value : [];
-  const { skills, categories } =
-    skillsData.status === "fulfilled"
-      ? skillsData.value
-      : { skills: [], categories: [] };
+  const skills = skillsData.status === "fulfilled" ? skillsData.value.skills : [];
   const svcs = services.status === "fulfilled" ? services.value : [];
   const exps = experiences.status === "fulfilled" ? experiences.value : [];
+  const edu = education.status === "fulfilled" ? education.value : [];
 
   if (!p) {
     return (
-      <div
-        className="min-h-[60vh] flex items-center justify-center"
-        style={{ color: "var(--text-secondary)" }}
-      >
+      <div className="min-h-[60vh] flex items-center justify-center text-[var(--text-secondary)]">
         <div className="text-center">
           <p className="text-lg">Could not load profile data.</p>
           {process.env.NODE_ENV === "development" && (
-            <p className="text-sm mt-2" style={{ color: "var(--text-muted)" }}>
+            <p className="text-sm mt-2 text-[var(--text-muted)]">
               Make sure the Laravel API is running at {API_BASE}
             </p>
           )}
@@ -60,23 +69,60 @@ export default async function HomePage() {
     );
   }
 
+  const portrait = p.hero_cutout_url ?? FALLBACK_PORTRAIT;
+  const years = p.years_of_experience;
+  const intro =
+    p.subtitle ??
+    `I build back ends, front ends and mobile apps that ship.${years ? ` ${years} years in` : ""}${
+      p.total_projects ? `, ${p.total_projects} projects live.` : "."
+    }`;
+  const since = [years ? `// est. ${new Date().getFullYear() - years}` : "//", p.location].filter(Boolean).join(", ");
+
+  const slides: HeroSlide[] = projects
+    .filter((pr) => pr.featured_image)
+    .slice(0, 4)
+    .map((pr) => ({
+      slug: pr.slug,
+      title: pr.title,
+      image: resolveImageUrl(pr.featured_image),
+      file: projectFile(pr),
+      category: pr.type ?? pr.category?.slug ?? "web",
+    }));
+
+  // Longest-running current role goes in the "currently" card.
+  const current = exps
+    .filter((e) => e.is_current || !e.end_date)
+    .sort((a, b) => (a.start_date ?? "").localeCompare(b.start_date ?? ""))[0];
+  const eduSorted = [...edu].sort((a, b) => (b.end_date ?? "9999").localeCompare(a.end_date ?? "9999"));
+  const degree = edu.find((e) => /b\.?\s?s\.?c|bachelor/i.test(e.degree));
+  const social = { ...(p.social_links ?? {}), ...(p.site_info?.social ?? {}) };
+  const email = p.email ?? p.site_info?.contact?.email;
+
   return (
-    <>
-      <HeroSection profile={p} />
-      <StatsBar
-        yearsOfExperience={p.years_of_experience}
-        totalProjects={p.total_projects}
-        happyClients={p.happy_clients}
+    <div className="home">
+      <HeroSection
+        name={p.full_name}
+        title={p.title}
+        intro={intro}
+        since={since}
+        portrait={portrait}
+        email={email}
+        roles={ROLES}
+        slides={slides}
+      />
+      <AboutBento
+        profile={p}
+        photo={p.hero_image_url ?? p.avatar_url ?? portrait}
+        skills={skills}
+        current={current}
+        education={eduSorted}
+        projectSlugs={projects.map((pr) => pr.slug)}
       />
       {projects.length > 0 && <FeaturedProjects projects={projects} />}
-      {(skills.length > 0 || categories.length > 0) && (
-        <SkillsSnapshot skills={skills} categories={categories} />
-      )}
+      {exps.length > 0 && <ExperiencePreview experiences={exps} degree={degree} authorName={p.full_name} />}
       {svcs.length > 0 && <ServicesGrid services={svcs} />}
-      {exps.length > 0 && <ExperiencePreview experiences={exps} />}
       {reviews.length > 0 && <TestimonialsCarousel testimonials={reviews} />}
-      {posts.length > 0 && <BlogPreview posts={posts} />}
-      <NewsletterCTA />
-    </>
+      <ContactCTA email={email} resumeUrl={p.resume_url} social={social} />
+    </div>
   );
 }

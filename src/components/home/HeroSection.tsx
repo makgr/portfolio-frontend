@@ -1,174 +1,166 @@
-import Image from "next/image";
-import Link from "next/link";
-import type { Profile } from "@/types/profile";
-import { Button } from "@/components/shared/Button";
-import { SocialLinks } from "@/components/shared/SocialLinks";
-import { resolveImageUrl } from "@/lib/utils/imageUrl";
+"use client";
 
-interface HeroSectionProps {
-  profile: Profile;
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { scramble } from "@/components/layout/SiteChrome";
+import { CopyEmailButton } from "./CopyEmailButton";
+
+export interface HeroSlide {
+  slug: string;
+  title: string;
+  image: string;
+  file: string;
+  category: string;
 }
 
-export function HeroSection({ profile }: HeroSectionProps) {
-  const socialLinks = {
-    ...(profile.social_links ?? {}),
-    ...(profile.site_info?.social ?? {}),
-  };
+interface HeroSectionProps {
+  name: string;
+  title: string;
+  intro: string;
+  since?: string;
+  portrait: string;
+  email?: string;
+  roles: string[];
+  slides: HeroSlide[];
+}
+
+const PLUS_X = ["0%", "16.666%", "33.333%", "66.666%", "83.333%", "100%"];
+const PLUS_Y = ["0%", "33.333%", "66.666%"];
+
+export function HeroSection({ name, title, intro, since, portrait, email, roles, slides }: HeroSectionProps) {
+  // "Mohammad Ali Khan" -> "Mohammad\nAli Khan": first name on its own line
+  const stacked = name.replace(" ", "\n");
+  const [shown, setShown] = useState(stacked);
+  const [revealed, setRevealed] = useState(false);
+  const [role, setRole] = useState(roles[0] ?? "");
+  const [slide, setSlide] = useState(0);
+
+  // Start the entrance once the intro loader has finished (or immediately if it was skipped).
+  useEffect(() => {
+    let stop = () => {};
+    const go = () => {
+      setRevealed(true);
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) stop = scramble(stacked, 900, setShown);
+    };
+    if (document.documentElement.dataset.intro === "done") go();
+    else window.addEventListener("intro:done", go, { once: true });
+    return () => {
+      window.removeEventListener("intro:done", go);
+      stop();
+    };
+  }, [stacked]);
+
+  // Typewriter for the "building:" line.
+  useEffect(() => {
+    if (!revealed || roles.length === 0 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let ri = 0, ci = 0, del = false, hold = 0;
+    const id = window.setInterval(() => {
+      if (hold > 0) return void hold--;
+      const word = roles[ri];
+      if (!del) {
+        ci++;
+        if (ci >= word.length) { del = true; hold = 32; }
+      } else {
+        ci -= 2;
+        if (ci <= 0) { ci = 0; del = false; ri = (ri + 1) % roles.length; hold = 6; }
+      }
+      setRole(roles[ri].slice(0, ci));
+    }, 55);
+    return () => clearInterval(id);
+  }, [revealed, roles]);
+
+  // Rotate the featured project card.
+  useEffect(() => {
+    if (slides.length < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setInterval(() => setSlide((s) => (s + 1) % slides.length), 3200);
+    return () => clearInterval(id);
+  }, [slides.length]);
+
+  const ghost = title.split(" ").pop()?.toUpperCase() ?? "";
 
   return (
-    <section
-      className="relative min-h-[90vh] flex items-center overflow-hidden"
-      aria-label="Hero"
-    >
-      {/* Background grid + radial glow */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: `
-            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124,58,237,0.15) 0%, transparent 60%),
-            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
-          `,
-          backgroundSize: "auto, 60px 60px, 60px 60px",
-        }}
-        aria-hidden="true"
-      />
+    <section className={`hero${revealed ? " in" : ""}`} id="top" data-spot="" suppressHydrationWarning>
+      <div className="hero-grid" aria-hidden="true" />
+      <div className="plus-layer" aria-hidden="true">
+        {PLUS_X.flatMap((x) =>
+          PLUS_Y.map((y) => (
+            <span key={x + y} className="plus" style={{ left: x, top: y }}>
+              +
+            </span>
+          ))
+        )}
+      </div>
+      <p className="ghost rise" aria-hidden="true">{ghost}</p>
+      <p className="ghost lit" aria-hidden="true">{ghost}</p>
+      <div className="halo" aria-hidden="true" />
+      <div className="portrait">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={portrait} alt={name} />
+        <div className="fade" />
+      </div>
 
-      <div
-        className="relative mx-auto w-full px-6 py-20"
-        style={{ maxWidth: "var(--max-width-container)" }}
-      >
-        <div className="flex flex-col-reverse lg:flex-row items-center gap-16">
-          {/* Text */}
-          <div className="flex-1 max-w-2xl">
-            {/* Label */}
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6 text-xs font-medium"
-              style={{
-                background: "var(--accent-dim)",
-                border: "1px solid rgba(124,58,237,0.3)",
-                color: "var(--accent-light)",
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-              }}
-            >
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: "#22c55e" }}
-                aria-hidden="true"
-              />
-              Available for work
-            </div>
+      <div className="hero-intro rise d2">
+        <p className="code-label">{`// ${title.toLowerCase()}`}</p>
+        <p>{intro}</p>
+        <p className="hero-role">
+          <span>building:</span> {role}
+          <span className="caret" />
+        </p>
+        <div className="ctas">
+          <Link className="btn-pill amber sm" href="/projects" data-cursor="view">
+            View my work
+          </Link>
+          {email && <CopyEmailButton email={email} className="btn-pill sm" />}
+        </div>
+      </div>
 
-            <h1
-              className="text-display-xl lg:text-display-2xl text-[var(--text-primary)] mb-4"
-              style={{ fontWeight: 800 }}
-            >
-              {profile.full_name}
-            </h1>
+      <h1 className="hero-name rise d1" aria-label={name} onMouseEnter={() => scramble(stacked, 600, setShown)}>
+        {since && <small>{since}</small>}
+        <strong aria-hidden="true">{shown}</strong>
+      </h1>
 
-            <p
-              className="text-display-sm lg:text-display-md mb-4"
-              style={{ color: "var(--accent-light)", fontWeight: 600 }}
-            >
-              {profile.title}
-            </p>
-
-            {profile.subtitle && (
-              <p
-                className="text-lg mb-6 leading-relaxed"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                {profile.subtitle}
-              </p>
-            )}
-
-            {(profile.short_bio ?? profile.bio) && (
-              <p
-                className="text-base mb-8 leading-relaxed max-w-xl"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                {profile.short_bio ?? profile.bio}
-              </p>
-            )}
-
-            <div className="flex flex-wrap items-center gap-3 mb-8">
-              <Button as="link" href="/projects" variant="primary" size="lg">
-                View My Work
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </Button>
-              <Button as="link" href="/contact" variant="outline" size="lg">
-                Contact Me
-              </Button>
-              {profile.resume_url && (
-                <a
-                  href={profile.resume_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-[var(--radius-button)] text-base font-medium transition-colors duration-200 border border-[var(--border-default)] hover:border-[var(--border-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                >
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                  </svg>
-                  Resume
-                </a>
-              )}
-            </div>
-
-            <SocialLinks links={socialLinks} size="md" />
+      {slides.length > 0 && (
+        <Link suppressHydrationWarning className="glow-card hero-proj rise d3" href={`/projects/${slides[slide].slug}`} data-cursor="view">
+          <div className="bar">
+            <i />
+            <i />
+            <i />
+            <b>{slides[slide].file}</b>
           </div>
-
-          {/* Avatar */}
-          {(profile.avatar_url || profile.hero_image_url) && (
-            <div className="relative flex-shrink-0">
-              <div
-                className="relative w-56 h-56 lg:w-72 lg:h-72 rounded-2xl overflow-hidden"
-                style={{
-                  border: "1px solid var(--border-default)",
-                  boxShadow: "0 0 60px rgba(124,58,237,0.2)",
-                }}
-              >
-                <Image
-                  src={resolveImageUrl(profile.hero_image_url ?? profile.avatar_url)}
-                  alt={profile.full_name}
-                  fill
-                  sizes="(min-width: 1024px) 288px, 224px"
-                  className="object-cover"
-                  priority
-                />
+          <div className="slides">
+            {slides.map((s, i) => (
+              <div key={s.slug} className={`slide${i === slide ? " on" : ""}`} aria-hidden={i !== slide}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={s.image} alt={s.title} />
+                <div>
+                  <span>{s.title}</span>
+                  <span>/{s.category}</span>
+                </div>
               </div>
-              {/* Glow ring */}
-              <div
-                className="absolute -inset-1 rounded-2xl -z-10"
-                style={{
-                  background: "radial-gradient(ellipse at center, rgba(124,58,237,0.3) 0%, transparent 70%)",
-                }}
-                aria-hidden="true"
-              />
-            </div>
-          )}
-        </div>
-      </div>
+            ))}
+          </div>
+          <div className="dots">
+            {slides.map((s, i) => (
+              <i key={s.slug} className={i === slide ? "on" : ""} />
+            ))}
+          </div>
+        </Link>
+      )}
 
-      {/* Scroll indicator */}
-      <div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2"
-        style={{ color: "var(--text-muted)" }}
-        aria-hidden="true"
-      >
-        <span className="text-xs text-label">Scroll</span>
-        <div
-          className="w-5 h-8 rounded-full border flex items-start justify-center p-1"
-          style={{ borderColor: "var(--border-default)" }}
-        >
-          <div
-            className="w-1 h-2 rounded-full animate-bounce"
-            style={{ background: "var(--accent-light)" }}
-          />
+      <Link suppressHydrationWarning className="glow-card hero-talk rise d4" href="/contact" data-cursor="hi">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={portrait} alt="" />
+        <div className="tx">
+          <small>Let&apos;s talk</small>
+          <b>{name}</b>
+          <span>{title}</span>
         </div>
-      </div>
+        <span className="go" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M7 17 17 7M8 7h9v9" />
+          </svg>
+        </span>
+      </Link>
     </section>
   );
 }

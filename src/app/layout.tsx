@@ -1,16 +1,23 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { getProfile } from "@/lib/api/profile";
 import { getSettings } from "@/lib/api/settings";
 import type { ReactNode } from "react";
 
-const inter = Inter({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-geist",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
@@ -67,24 +74,6 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-function ThemeScript() {
-  const script = `
-    (function() {
-      try {
-        var stored = localStorage.getItem('portfolio-theme');
-        var preferred = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-        if (preferred === 'light') document.documentElement.classList.add('light');
-      } catch(e) {}
-    })();
-  `;
-  return (
-    <script
-      dangerouslySetInnerHTML={{ __html: script }}
-      suppressHydrationWarning
-    />
-  );
-}
-
 export default async function RootLayout({
   children,
 }: {
@@ -98,11 +87,9 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
-      <head>
-        <ThemeScript />
-      </head>
-      <body className="flex flex-col min-h-screen" style={{ fontFamily: "var(--font-inter), Inter, system-ui, sans-serif" }}>
+    <html lang="en" suppressHydrationWarning className={`${geist.variable} ${geistMono.variable}`}>
+      <body className="flex flex-col min-h-screen">
+        <SiteChrome name={profile?.full_name ?? "Portfolio"} />
         <Header />
         <main className="flex-1 pt-20">
           <PageTransition>{children}</PageTransition>

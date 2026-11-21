@@ -1,112 +1,105 @@
 import type { Experience } from "@/types/experience";
-import Link from "next/link";
-import { SectionTitle } from "@/components/shared/SectionTitle";
-import { AnimatedSection } from "@/components/shared/AnimatedSection";
-import { Badge } from "@/components/shared/Badge";
+import type { Education } from "@/types/education";
 import { formatDateShort } from "@/lib/utils/formatDate";
 
-interface ExperiencePreviewProps {
-  experiences: Experience[];
+interface Commit {
+  key: string;
+  type: string;
+  title: string;
+  desc: string;
+  tech: string[];
+  when: string;
+  ref?: string;
+  current: boolean;
 }
 
-export function ExperiencePreview({ experiences }: ExperiencePreviewProps) {
-  const recent = experiences.slice(0, 2);
-  if (recent.length === 0) return null;
+/** Short, stable fake commit hash (FNV-1a) so each row looks like `git log --oneline`. */
+function hash(str: string) {
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return (h >>> 0).toString(16).padStart(8, "0").slice(0, 7);
+}
+
+export function ExperiencePreview({
+  experiences,
+  degree,
+  authorName,
+}: {
+  experiences: Experience[];
+  degree?: Education;
+  authorName: string;
+}) {
+  const sorted = [...experiences].sort((a, b) => (b.start_date ?? "").localeCompare(a.start_date ?? ""));
+  const commits: Commit[] = sorted.map((e, i) => {
+    const company = e.company_name ?? e.company ?? "";
+    const freelance = /freelance/i.test(company + (e.employment_type ?? ""));
+    const current = !!e.is_current || !e.end_date;
+    return {
+      key: `e${e.id}`,
+      type: freelance ? "merge:" : "feat:",
+      title: freelance ? company.replace(/^freelance\s*/i, "freelance work ").trim() : `joined ${company}`,
+      desc: e.position,
+      tech: e.technologies?.slice(0, 4) ?? [],
+      when: `${formatDateShort(e.start_date)} – ${current ? "now" : formatDateShort(e.end_date)}`,
+      ref: i === 0 ? "HEAD -> main" : freelance ? "freelance" : undefined,
+      current,
+    };
+  });
+  if (degree) {
+    const y = (d?: string | null) => (d ? new Date(d).getFullYear() : "");
+    commits.push({
+      key: `d${degree.id}`,
+      type: "init:",
+      title: [degree.degree, degree.field_of_study].filter(Boolean).join(" in "),
+      desc: degree.institution,
+      tech: [],
+      when: [y(degree.start_date), y(degree.end_date)].filter(Boolean).join(" – "),
+      current: false,
+    });
+  }
 
   return (
-    <section className="py-24" aria-labelledby="experience-heading">
-      <div
-        className="mx-auto px-6"
-        style={{ maxWidth: "var(--max-width-container)" }}
-      >
-        <AnimatedSection className="flex items-start justify-between mb-12 flex-wrap gap-4">
-          <SectionTitle
-            label="Career"
-            title={
-              <>
-                Work <span className="gradient-text">Experience</span>
-              </>
-            }
-            className="mb-0"
-          />
-          <Link
-            href="/about#experience"
-            className="text-sm font-medium transition-colors"
-            style={{ color: "var(--accent-light)" }}
-          >
-            View full timeline →
-          </Link>
-        </AnimatedSection>
-
-        <div className="space-y-6">
-          {recent.map((exp, i) => (
-            <AnimatedSection key={exp.id} delay={i * 0.1}>
-              <div
-                className="p-6 rounded-[var(--radius-card)] flex flex-col sm:flex-row gap-4"
-                style={{
-                  background: "var(--bg-tertiary)",
-                  border: "1px solid var(--border-default)",
-                }}
-              >
-                <div className="flex-1">
-                  <div className="flex items-start justify-between gap-4 mb-2 flex-wrap">
-                    <div>
-                      <h3
-                        className="font-semibold text-base"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        {exp.position}
-                      </h3>
-                      <p
-                        className="text-sm font-medium mt-0.5"
-                        style={{ color: "var(--accent-light)" }}
-                      >
-                        {exp.company_name ?? exp.company}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      {exp.is_current && (
-                        <Badge variant="success" size="sm">Current</Badge>
-                      )}
-                      <span
-                        className="text-xs"
-                        style={{ color: "var(--text-muted)" }}
-                      >
-                        {formatDateShort(exp.start_date)} —{" "}
-                        {exp.is_current ? "Present" : formatDateShort(exp.end_date)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {exp.description && (
-                    <p
-                      className="text-sm leading-relaxed mb-4"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
-                      {exp.description}
-                    </p>
-                  )}
-
-                  {exp.technologies && exp.technologies.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {exp.technologies.slice(0, 5).map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-2 py-0.5 text-xs rounded font-mono"
-                          style={{
-                            background: "var(--bg-elevated)",
-                            color: "var(--text-muted)",
-                            border: "1px solid var(--border-default)",
-                          }}
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
+    <section className="sec" id="experience">
+      <div className="wrap">
+        <div className="sec-head">
+          <div>
+            <p className="code-label">{"// experience"}</p>
+            <h2 className="h2">Commit history</h2>
+          </div>
+          <p>Every role, newest first. Amber means I&apos;m still there.</p>
+        </div>
+        <div className="gitlog">
+          <div className="cmdline">
+            <span>$</span> git log --author=&quot;{authorName}&quot;
+          </div>
+          {commits.map((c) => (
+            <div key={c.key} className={`commit${c.current ? " cur" : ""}`}>
+              <div className="graph">
+                <i />
               </div>
-            </AnimatedSection>
+              <div className="hash">{hash(c.key + c.title)}</div>
+              <div>
+                <p className="msg">
+                  <span className="ty">{c.type}</span>
+                  {c.title}
+                  {c.ref && <span className="ref">{c.ref}</span>}
+                </p>
+                <p className="desc">{c.desc}</p>
+                {c.tech.length > 0 && (
+                  <div className="tags">
+                    {c.tech.map((t) => (
+                      <span key={t} className="tag">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="when">{c.when}</div>
+            </div>
           ))}
         </div>
       </div>

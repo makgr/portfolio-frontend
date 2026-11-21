@@ -27,7 +27,7 @@ export function Avatar({ src, alt, size = 48, className, fallback }: AvatarProps
       <div
         className={cn(
           "flex items-center justify-center rounded-full",
-          "bg-[var(--accent-dim)] border border-[rgba(124,58,237,0.3)]",
+          "bg-[var(--accent-dim)] border border-[rgba(255,181,71,0.3)]",
           "text-[var(--accent-light)] font-semibold select-none",
           className
         )}
