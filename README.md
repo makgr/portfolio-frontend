@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Frontend
 
-## Getting Started
+A personal portfolio website built with **Next.js 16**, **React 19**, **Tailwind CSS 4** and **Framer Motion**. It has a home page, projects, a blog, an about page and a contact form, with light and dark themes.
 
-First, run the development server:
+All content comes from a separate Laravel backend:
+**[makgr/personalportfolio](https://github.com/makgr/personalportfolio)**. Nothing about the portfolio owner is hardcoded here, so you can fork this repo, point it at your own backend and get your own site.
+
+## Features
+
+- Home page with hero, stats, featured projects, skills, services, experience, testimonials and latest posts
+- Projects list with category filter and a detail page with an image gallery
+- Blog with search, category filter, pagination, a table of contents and a reading progress bar
+- About page with bio, experience timeline, education, skills and training/certifications
+- Contact form and newsletter signup (both post to the backend)
+- Light and dark themes, skeleton loaders, page transitions, SEO metadata
+
+## Requirements
+
+- Node.js 20+
+- A running copy of the [backend API](https://github.com/makgr/personalportfolio)
+
+## Getting started
 
 ```bash
+git clone https://github.com/makgr/portfolio-frontend.git
+cd portfolio-frontend
+npm install
+cp .env.example .env.local   # then edit the values
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Description | Example |
+| --- | --- | --- |
+| `NEXT_PUBLIC_API_URL` | Base URL of the backend API, including `/api/v1` | `http://localhost:8000/api/v1` |
+| `NEXT_PUBLIC_SITE_URL` | Public URL of this frontend, used for SEO metadata | `https://example.com` |
 
-## Learn More
+Images whose paths come back relative are loaded from the backend host (`NEXT_PUBLIC_API_URL` minus `/api/v1`).
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run typecheck` | Type-check with TypeScript |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+```
+src/
+  app/          Routes (home, projects, blog, about, contact)
+  components/   UI grouped by page, plus layout/, shared/, skeletons/
+  hooks/        Client hooks (theme, forms, scroll, debounce, ...)
+  lib/api/      One fetcher per backend endpoint (client.ts holds the base URL)
+  lib/utils/    Helpers (dates, image URLs, headings, constants)
+  types/        TypeScript types matching the API responses
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Security note
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Blog post content is rendered as HTML exactly as the backend returns it. Only trusted admins should be able to write posts, or you should sanitize the HTML on the backend before saving it.
+
+## Contributing
+
+Issues and pull requests are welcome. Please open PRs against the `development` branch and make sure `npm run typecheck` and `npm run build` pass.
+
+## Support the Project
+
+If this project helps you, you can sponsor or donate to support its development.
+
+- **GitHub Sponsors:** [github.com/sponsors/makgr](https://github.com/sponsors/makgr)
+- **Bank transfer:**
+
+|              |                       |
+| ------------ | --------------------- |
+| Account Name | MOHAMMAD ALI KHAN     |
+| Account No   | 2061510357001         |
+| Bank         | Dutch Bangla Bank PLC |
+| Branch       | Jamalpur              |
+| SWIFT        | DBBLBDDH              |
+| Routing No   | 090390854             |
+| Country      | Bangladesh            |
+
+For other ways to donate, contact us by email or Discord.
+
+## Contact
+
+- **Email:** [xvirus.bd@gmail.com](mailto:xvirus.bd@gmail.com)
+- **Discord:** `semakgr`
+- **Facebook:** [facebook.com/robotbalok](https://www.facebook.com/robotbalok)
+
+## License
+
+[MIT](LICENSE)
