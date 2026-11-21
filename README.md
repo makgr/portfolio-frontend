@@ -1,4 +1,4 @@
-# Portfolio Frontend
+# Portfolio Frontend 
 
 A personal portfolio website built with **Next.js 16**, **React 19**, **Tailwind CSS 4** and **Framer Motion**. It has a home page, projects, a blog, an about page and a contact form, with light and dark themes.
 
