@@ -10,7 +10,6 @@ export async function getProjects(filter?: ProjectsFilter): Promise<Project[]> {
   const query = params.toString() ? `?${params.toString()}` : "";
 
   const res = await apiFetch<ApiResponse<Project[]>>(`/projects${query}`, {
-    revalidate: 0,
     tags: ["projects"],
   });
   return res.data ?? [];
@@ -18,7 +17,6 @@ export async function getProjects(filter?: ProjectsFilter): Promise<Project[]> {
 
 export async function getFeaturedProjects(): Promise<Project[]> {
   const res = await apiFetch<ApiResponse<Project[]>>("/projects/featured", {
-    revalidate: 0,
     tags: ["projects", "projects-featured"],
   });
   return res.data ?? [];
@@ -27,7 +25,6 @@ export async function getFeaturedProjects(): Promise<Project[]> {
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   try {
     const res = await apiFetch<ApiResponse<Project>>(`/projects/${slug}`, {
-      revalidate: 0,
       tags: [`project-${slug}`],
     });
     return res.data ?? null;

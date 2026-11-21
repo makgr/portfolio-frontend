@@ -2,6 +2,9 @@ import { ApiError } from "@/types/api";
 
 export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
+/** Seconds a GET response stays in Next's data cache before it is refetched. */
+export const API_CACHE_SECONDS = Number(process.env.API_CACHE_SECONDS ?? 300);
+
 export type FetchOptions = Omit<RequestInit, "next"> & {
   revalidate?: number | false;
   tags?: string[];
@@ -13,9 +16,13 @@ export async function apiFetch<T>(
 ): Promise<T> {
   const { revalidate, tags, ...fetchOptions } = options;
 
+  // Only GETs are cached; tags let /api/revalidate drop a resource on demand.
+  const isGet = (fetchOptions.method ?? "GET").toUpperCase() === "GET";
   const nextOptions: { revalidate?: number | false; tags?: string[] } = {};
-  if (revalidate !== undefined) nextOptions.revalidate = revalidate;
-  if (tags) nextOptions.tags = tags;
+  if (isGet) {
+    nextOptions.revalidate = revalidate ?? API_CACHE_SECONDS;
+    if (tags) nextOptions.tags = tags;
+  }
 
   const url = `${API_BASE}${path}`;
 
