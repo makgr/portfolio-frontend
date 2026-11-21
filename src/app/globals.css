@@ -837,3 +837,91 @@ html.cursor-hover .cur-dot {
   .rl-bug { transition: none; }
   .caret, .dot-live { animation: none; }
 }
+
+/* ============================================================
+   Maintenance page
+   ============================================================ */
+.maint {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 20px;
+}
+.maint-inner {
+  width: min(640px, 100%);
+}
+.maint h1 {
+  margin: 0;
+  font: 600 clamp(40px, 7vw, 76px)/1 var(--font-geist), sans-serif;
+  letter-spacing: -0.05em;
+  color: var(--text-primary);
+}
+.maint-lede {
+  margin: 20px 0 32px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 48ch;
+}
+.maint-term {
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.8);
+}
+.maint-head {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-secondary);
+  font: 12px var(--font-geist-mono), monospace;
+  color: var(--text-secondary);
+}
+.maint-body {
+  padding: 18px 20px;
+  font: 14px/1.95 var(--font-geist-mono), monospace;
+  color: #c9d3e0;
+}
+.maint-body p {
+  margin: 0;
+}
+.maint-body .pr {
+  color: var(--accent);
+}
+.maint-body .ok {
+  color: #3ddc84;
+}
+.maint-body .dim {
+  color: var(--text-muted);
+}
+/* CSS-only spinner so the page works without JavaScript */
+.maint-spin {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 181, 71, 0.3);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  vertical-align: -1px;
+  animation: maint-spin 0.8s linear infinite;
+}
+@keyframes maint-spin {
+  to { transform: rotate(360deg); }
+}
+.maint-contact {
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .maint-spin { animation: none; }
+}

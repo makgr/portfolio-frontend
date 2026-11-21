@@ -8,7 +8,8 @@ import { SiteChrome } from "@/components/layout/SiteChrome";
 import { clip, metaTags } from "@/lib/seo";
 import { resolveImageUrl } from "@/lib/utils/imageUrl";
 import { getProfile } from "@/lib/api/profile";
-import { getSettings } from "@/lib/api/settings";
+import { getSettings, isMaintenanceMode } from "@/lib/api/settings";
+import { MaintenanceView } from "@/components/layout/MaintenanceView";
 import type { ReactNode } from "react";
 
 const geist = Geist({
@@ -24,6 +25,10 @@ const geistMono = Geist_Mono({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
+  // Keep the maintenance page out of search results.
+  if (await isMaintenanceMode()) {
+    return { title: "Back soon", robots: { index: false, follow: false } };
+  }
   try {
     const [profile, settings] = await Promise.all([
       getProfile(),
@@ -92,6 +97,7 @@ export default async function RootLayout({
   } catch {
     // Profile fetch failed — layout still renders
   }
+  const maintenance = await isMaintenanceMode();
 
   return (
     <html
@@ -101,12 +107,18 @@ export default async function RootLayout({
       className={`${geist.variable} ${geistMono.variable}`}
     >
       <body className="flex flex-col min-h-screen">
-        <SiteChrome name={profile?.full_name ?? "Portfolio"} />
-        <Header />
-        <main className="flex-1 pt-20">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <Footer profile={profile} />
+        <SiteChrome name={profile?.full_name ?? "Portfolio"} intro={!maintenance} />
+        {maintenance ? (
+          <MaintenanceView profile={profile} />
+        ) : (
+          <>
+            <Header />
+            <main className="flex-1 pt-20">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <Footer profile={profile} />
+          </>
+        )}
       </body>
     </html>
   );

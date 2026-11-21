@@ -1,6 +1,7 @@
 // Author: Mohammad Ali Khan <xvirus.bd@gmail.com>
 import type { Metadata } from "next";
 import { getProfile } from "@/lib/api/profile";
+import { isMaintenanceMode } from "@/lib/api/settings";
 import { resolveImageUrl } from "@/lib/utils/imageUrl";
 import type { Profile, SocialLinks } from "@/types/profile";
 
@@ -42,6 +43,8 @@ interface PageMetaInput {
  * page without one would share as the home page.
  */
 export async function pageMetadata({ title, description, path, images, article }: PageMetaInput): Promise<Metadata> {
+  // While in maintenance the layout's "Back soon" title and noindex apply to every page.
+  if (await isMaintenanceMode()) return {};
   const profile = await getProfile().catch(() => null);
   const desc = clip(description ?? profile?.short_bio);
   const pictures = (images ?? []).filter(Boolean).length

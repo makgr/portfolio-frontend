@@ -176,7 +176,7 @@ function IntroLoader({ name }: { name: string }) {
  * Site-wide chrome: the dim code backdrop lit by the pointer, the amber cursor
  * (dot + trailing ring with a label from `data-cursor`) and the intro loader.
  */
-export function SiteChrome({ name }: { name: string }) {
+export function SiteChrome({ name, intro = true }: { name: string; intro?: boolean }) {
   const dot = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLDivElement>(null);
   const label = useRef<HTMLSpanElement>(null);
@@ -246,7 +246,7 @@ export function SiteChrome({ name }: { name: string }) {
         </div>
       </div>
       <div className="pointer-glow" aria-hidden="true" />
-      <IntroLoader name={name} />
+      {intro && <IntroLoader name={name} />}
       <div className="cur-dot" ref={dot} aria-hidden="true" />
       <div className="cur-ring" ref={ring} aria-hidden="true">
         <i />
