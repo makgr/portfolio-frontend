@@ -39,7 +39,7 @@ export function AboutBento({ profile, photo, skills, current, education, project
         <div className="bento">
           <div suppressHydrationWarning className="glow-card b-photo">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={photo} alt={profile.full_name} />
+            <img src={photo} alt={profile.full_name} loading="lazy" decoding="async" />
             <div className="shade" />
             <div className="cap">
               <h3>{profile.full_name}</h3>

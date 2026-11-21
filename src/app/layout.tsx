@@ -87,7 +87,12 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${geist.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      className={`${geist.variable} ${geistMono.variable}`}
+    >
       <body className="flex flex-col min-h-screen">
         <SiteChrome name={profile?.full_name ?? "Portfolio"} />
         <Header />

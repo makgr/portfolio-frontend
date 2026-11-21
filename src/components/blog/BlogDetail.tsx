@@ -11,6 +11,10 @@ interface BlogDetailProps {
   post: BlogPost;
 }
 
+
+/** Adds lazy loading to images inside post HTML that don't set it themselves. */
+const lazyImages = (html: string) => html.replace(/<img(?![^>]*\bloading=)/gi, '<img loading="lazy" decoding="async"');
+
 export function BlogDetail({ post }: BlogDetailProps) {
   return (
     <>
@@ -103,7 +107,7 @@ export function BlogDetail({ post }: BlogDetailProps) {
             {post.content ? (
               <div
                 className="prose-portfolio"
-                dangerouslySetInnerHTML={{ __html: post.content }}
+                dangerouslySetInnerHTML={{ __html: lazyImages(post.content) }}
               />
             ) : (
               <p style={{ color: "var(--text-secondary)" }}>Content not available.</p>

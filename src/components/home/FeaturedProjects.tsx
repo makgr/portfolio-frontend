@@ -19,7 +19,7 @@ export function FeaturedProjects({ projects }: { projects: Project[] }) {
               <div className="shot">
                 {p.featured_image && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={resolveImageUrl(p.featured_image)} alt={p.title} loading="lazy" />
+                  <img src={resolveImageUrl(p.featured_image)} alt={p.title} loading="lazy" decoding="async" />
                 )}
               </div>
               <div className="meta">

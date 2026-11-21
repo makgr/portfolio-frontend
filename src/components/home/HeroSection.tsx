@@ -95,7 +95,7 @@ export function HeroSection({ name, title, intro, since, portrait, email, roles,
       <div className="halo" aria-hidden="true" />
       <div className="portrait">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={portrait} alt={name} />
+        <img src={portrait} alt={name} fetchPriority="high" />
         <div className="fade" />
       </div>
 
@@ -131,7 +131,7 @@ export function HeroSection({ name, title, intro, since, portrait, email, roles,
             {slides.map((s, i) => (
               <div key={s.slug} className={`slide${i === slide ? " on" : ""}`} aria-hidden={i !== slide}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={s.image} alt={s.title} />
+                <img src={s.image} alt={s.title} loading={i === 0 ? "eager" : "lazy"} decoding="async" />
                 <div>
                   <span>{s.title}</span>
                   <span>/{s.category}</span>
@@ -149,7 +149,7 @@ export function HeroSection({ name, title, intro, since, portrait, email, roles,
 
       <Link suppressHydrationWarning className="glow-card hero-talk rise d4" href="/contact" data-cursor="hi">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={portrait} alt="" />
+        <img src={portrait} alt="" loading="lazy" decoding="async" />
         <div className="tx">
           <small>Let&apos;s talk</small>
           <b>{name}</b>

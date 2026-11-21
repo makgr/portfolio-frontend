@@ -66,6 +66,7 @@ export function TeamGrid({ members }: { members: TeamMember[] }) {
                     src={resolveImageUrl(m.image)}
                     alt={m.name}
                     loading="lazy"
+                    decoding="async"
                     className="w-16 h-16 rounded-xl object-cover flex-none"
                   />
                 ) : (

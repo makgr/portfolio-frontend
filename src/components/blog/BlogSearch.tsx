@@ -13,6 +13,9 @@ export function BlogSearch() {
   const [, startTransition] = useTransition();
 
   useEffect(() => {
+    // Only navigate when the typed text differs from the URL; otherwise each push
+    // changes searchParams, re-runs this effect and loops ("Throttling navigation").
+    if (debounced === (searchParams.get("search") ?? "")) return;
     const params = new URLSearchParams(searchParams.toString());
     if (debounced) {
       params.set("search", debounced);
