@@ -3,7 +3,15 @@
 
 import { useEffect, useState } from "react";
 
-export function CopyEmailButton({ email, className }: { email: string; className?: string }) {
+export function CopyEmailButton({
+  email,
+  className,
+  label = "Copy email",
+}: {
+  email: string;
+  className?: string;
+  label?: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -19,7 +27,7 @@ export function CopyEmailButton({ email, className }: { email: string; className
       data-cursor="copy"
       onClick={() => navigator.clipboard?.writeText(email).then(() => setCopied(true), () => setCopied(false))}
     >
-      <span aria-live="polite">{copied ? "Email copied" : "Copy email"}</span>
+      <span aria-live="polite">{copied ? "Email copied" : label}</span>
     </button>
   );
 }
