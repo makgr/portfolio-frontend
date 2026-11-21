@@ -29,6 +29,11 @@
   --accent-glow: rgba(255, 181, 71, 0.3);
   --on-accent: #1a1205;
 
+  /* Status */
+  --error: #f87171;
+  --success: #3ddc84;
+  --warning: #f59e0b;
+
   /* Syntax colours used by code-flavoured UI */
   --syn-kw: #c3a6ff;
   --syn-str: #a6e3a1;
