@@ -69,6 +69,31 @@ Blog post content is rendered as HTML exactly as the backend returns it. Only tr
 
 Issues and pull requests are welcome. Please open PRs against the `development` branch and make sure `npm run typecheck` and `npm run build` pass.
 
+## Support the Project
+
+If this project helps you, you can sponsor or donate to support its development.
+
+- **GitHub Sponsors:** [github.com/sponsors/makgr](https://github.com/sponsors/makgr)
+- **Bank transfer:**
+
+|              |                       |
+| ------------ | --------------------- |
+| Account Name | MOHAMMAD ALI KHAN     |
+| Account No   | 2061510357001         |
+| Bank         | Dutch Bangla Bank PLC |
+| Branch       | Jamalpur              |
+| SWIFT        | DBBLBDDH              |
+| Routing No   | 090390854             |
+| Country      | Bangladesh            |
+
+For other ways to donate, contact us by email or Discord.
+
+## Contact
+
+- **Email:** [xvirus.bd@gmail.com](mailto:xvirus.bd@gmail.com)
+- **Discord:** `semakgr`
+- **Facebook:** [facebook.com/robotbalok](https://www.facebook.com/robotbalok)
+
 ## License
 
 [MIT](LICENSE)
