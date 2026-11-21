@@ -90,7 +90,7 @@ For other ways to donate, contact us by email or Discord.
 
 ## Contact
 
-- **Email:** [xvirus.bd@gmail.com](mailto:xvirus.bd@gmail.com)
+- **Email:** [xvirus.bd@gmail.com](mailto:xvirus.bd@gmail.com), [mehedikhan3281@gmail.com](mailto:mehedikhan3281@gmail.com)
 - **Discord:** `semakgr`
 - **Facebook:** [facebook.com/robotbalok](https://www.facebook.com/robotbalok)
 

@@ -24,7 +24,7 @@ export function Header() {
             : "border-b border-transparent"
         )}
         style={{
-          background: scrolled ? "rgba(10,10,15,0.85)" : "transparent",
+          background: scrolled ? "var(--bg-header)" : "transparent",
           borderColor: scrolled ? "var(--border-default)" : "transparent",
         }}
       >
