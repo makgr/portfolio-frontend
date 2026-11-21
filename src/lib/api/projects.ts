@@ -25,7 +25,7 @@ export async function getFeaturedProjects(): Promise<Project[]> {
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   try {
     const res = await apiFetch<ApiResponse<Project>>(`/projects/${slug}`, {
-      tags: [`project-${slug}`],
+      tags: ["projects", `project-${slug}`],
     });
     return res.data ?? null;
   } catch {

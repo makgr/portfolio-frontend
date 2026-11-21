@@ -7,6 +7,8 @@ interface SectionTitleProps {
   subtitle?: string;
   center?: boolean;
   className?: string;
+  /** h1 when this is the page title, h2 for a section inside a page. */
+  as?: "h1" | "h2";
 }
 
 export function SectionTitle({
@@ -15,6 +17,7 @@ export function SectionTitle({
   subtitle,
   center = false,
   className,
+  as: Heading = "h2",
 }: SectionTitleProps) {
   return (
     <div
@@ -32,12 +35,12 @@ export function SectionTitle({
           {label}
         </p>
       )}
-      <h2
+      <Heading
         className="text-display-md text-[var(--text-primary)]"
         style={{ fontWeight: 700 }}
       >
         {title}
-      </h2>
+      </Heading>
       {subtitle && (
         <p
           className="mt-4 max-w-2xl text-[var(--text-secondary)] text-lg leading-relaxed"

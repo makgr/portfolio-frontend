@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { API_BASE } from "@/lib/api/client";
 import { getProfile } from "@/lib/api/profile";
@@ -22,9 +23,14 @@ import { ExperiencePreview } from "@/components/home/ExperiencePreview";
 import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { TestimonialsCarousel } from "@/components/home/TestimonialsCarousel";
 import { ContactCTA } from "@/components/home/ContactCTA";
+import { JsonLd } from "@/components/shared/JsonLd";
+import { SITE_URL, socialUrls } from "@/lib/seo";
 import "@/components/home/home.css";
 
 export const revalidate = 0;
+
+// Title, description and share image come from the layout; the home page only adds its canonical URL.
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 // shortcut: placeholder portrait until the backend serves profile.hero_cutout_url
 const FALLBACK_PORTRAIT = "/images/hero-portrait.jpg";
@@ -166,6 +172,39 @@ async function Contact({ profile }: { profile: Promise<Profile | null> }) {
   );
 }
 
+/** Tells search engines who the site belongs to and links their social profiles. */
+async function HomeJsonLd({ profile }: { profile: Promise<Profile | null> }) {
+  const p = await profile;
+  if (!p) return null;
+  const image = p.hero_cutout_url ?? p.hero_image_url ?? p.avatar_url;
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": `${SITE_URL}/#person`,
+            name: p.full_name,
+            jobTitle: p.title,
+            url: SITE_URL,
+            ...(image ? { image: resolveImageUrl(image) } : {}),
+            ...(p.location ? { address: { "@type": "PostalAddress", addressCountry: p.location } } : {}),
+            sameAs: socialUrls(p),
+          },
+          {
+            "@type": "WebSite",
+            "@id": `${SITE_URL}/#website`,
+            url: SITE_URL,
+            name: p.full_name,
+            publisher: { "@id": `${SITE_URL}/#person` },
+          },
+        ],
+      }}
+    />
+  );
+}
+
 /** Keeps roughly the section's height while it loads so the page doesn't jump. */
 function Placeholder({ height }: { height: number | string }) {
   return <div aria-hidden="true" style={{ minHeight: height }} />;
@@ -202,6 +241,9 @@ export default function HomePage() {
       </Suspense>
       <Suspense fallback={<Placeholder height={600} />}>
         <Contact profile={profile} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <HomeJsonLd profile={profile} />
       </Suspense>
     </div>
   );

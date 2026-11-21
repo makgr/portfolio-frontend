@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getBlogPostBySlug, getBlogPosts } from "@/lib/api/blog";
 import { BlogDetail } from "@/components/blog/BlogDetail";
+import { JsonLd } from "@/components/shared/JsonLd";
+import { pageMetadata, metaTags, clip, SITE_URL } from "@/lib/seo";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -15,24 +18,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await getBlogPostBySlug(slug);
   if (!post) return { title: "Post Not Found" };
 
-  return {
-    title: post.title,
-    description: post.excerpt ?? "",
-    openGraph: {
-      title: post.title,
-      description: post.excerpt ?? "",
-      type: "article",
+  const meta = metaTags(post.meta_tags);
+  return pageMetadata({
+    title: meta.title ?? post.title,
+    description: meta.description ?? post.excerpt ?? post.content,
+    path: `/blog/${post.slug}`,
+    images: [post.featured_image],
+    article: {
       publishedTime: post.published_at,
+      modifiedTime: post.updated_at,
       authors: post.author?.name ? [post.author.name] : [],
-      ...(post.featured_image ? { images: [{ url: post.featured_image }] } : {}),
+      tags: post.tags ?? [],
     },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt ?? "",
-      ...(post.featured_image ? { images: [post.featured_image] } : {}),
-    },
-  };
+  });
 }
 
 export default async function BlogPostPage({ params }: Props) {
@@ -40,6 +38,20 @@ export default async function BlogPostPage({ params }: Props) {
   const post = await getBlogPostBySlug(slug);
 
   if (!post) notFound();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: clip(post.excerpt ?? post.content, 300),
+    url: `${SITE_URL}/blog/${post.slug}`,
+    mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+    ...(post.featured_image ? { image: resolveImageUrl(post.featured_image) } : {}),
+    ...(post.published_at ? { datePublished: post.published_at } : {}),
+    ...(post.updated_at ? { dateModified: post.updated_at } : {}),
+    ...(post.author?.name ? { author: { "@type": "Person", name: post.author.name, url: SITE_URL } } : {}),
+    ...(post.tags?.length ? { keywords: post.tags.join(", ") } : {}),
+  };
 
   return (
     <div
@@ -64,6 +76,7 @@ export default async function BlogPostPage({ params }: Props) {
         </span>
       </nav>
 
+      <JsonLd data={jsonLd} />
       <BlogDetail post={post} />
 
       {/* Back link */}

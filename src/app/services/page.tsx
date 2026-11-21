@@ -1,5 +1,6 @@
 // Author: Mohammad Ali Khan <xvirus.bd@gmail.com>
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { getServices } from "@/lib/api/services";
 import { getProfile } from "@/lib/api/profile";
@@ -9,10 +10,13 @@ import "@/components/home/home.css";
 
 export const revalidate = 0;
 
-export const metadata: Metadata = {
-  title: "Services",
-  description: "Web apps, APIs, mobile apps and the support to keep them running.",
-};
+export function generateMetadata(): Promise<Metadata> {
+  return pageMetadata({
+    title: "Services",
+    description: "Web apps, APIs, mobile apps and the support to keep them running.",
+    path: "/services",
+  });
+}
 
 const fileName = (s: Service) =>
   s.slug ?? s.title.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");

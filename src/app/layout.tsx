@@ -5,6 +5,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { SiteChrome } from "@/components/layout/SiteChrome";
+import { clip, metaTags } from "@/lib/seo";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 import { getProfile } from "@/lib/api/profile";
 import { getSettings } from "@/lib/api/settings";
 import type { ReactNode } from "react";
@@ -33,14 +35,19 @@ export async function generateMetadata(): Promise<Metadata> {
       settings?.seo?.site_name ??
       profile.full_name ??
       "Portfolio";
-    const description =
+    // Most specific first: the generic site_description ("This is a personal
+    // portfolio site.") only wins when nothing better is filled in.
+    const description = clip(
       settings?.seo?.meta_description ??
-      settings?.general?.site_description ??
-      profile.short_bio ??
-      profile.bio ??
-      "Personal portfolio website";
-    const ogImage =
-      settings?.seo?.og_image ?? profile.hero_image_url ?? profile.avatar_url;
+        metaTags(profile.meta_tags).description ??
+        profile.short_bio ??
+        settings?.general?.site_description ??
+        profile.bio ??
+        "Personal portfolio website"
+    );
+    const ogImage = resolveImageUrl(
+      settings?.seo?.og_image ?? metaTags(profile.meta_tags).og_image ?? profile.hero_image_url ?? profile.avatar_url
+    );
 
     return {
       metadataBase: new URL(

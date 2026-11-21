@@ -155,7 +155,7 @@ function IntroLoader({ name }: { name: string }) {
   if (phase === "done") return null;
   const filled = Math.round(p / 5);
   return (
-    <div className={`intro${phase === "out" ? " out" : ""}`} role="status" aria-label="Loading portfolio">
+    <div className={`intro${phase === "out" ? " out" : ""}`} role="status" aria-label="Loading portfolio" data-nosnippet="">
       <div className="intro-body">
         {STEPS.filter((s) => p >= s[0]).map((s) => (
           <div key={s[3]} className="intro-line">
@@ -238,10 +238,11 @@ export function SiteChrome({ name }: { name: string }) {
 
   return (
     <>
+      {/* The code is drawn by CSS from data-code, so it isn't page text that search engines index. */}
       <div className="codefield" aria-hidden="true">
-        <pre>{CODE}</pre>
+        <pre data-code={CODE} />
         <div className="lit">
-          <pre>{CODE}</pre>
+          <pre data-code={CODE} />
         </div>
       </div>
       <div className="pointer-glow" aria-hidden="true" />

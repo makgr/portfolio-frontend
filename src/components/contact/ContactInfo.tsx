@@ -57,12 +57,12 @@ export function ContactInfo({ profile }: ContactInfoProps) {
 
   return (
     <div>
-      <h2
+      <h1
         className="text-display-sm font-bold mb-3"
         style={{ color: "var(--text-primary)" }}
       >
         Let&apos;s work together
-      </h2>
+      </h1>
       <p
         className="text-base leading-relaxed mb-8"
         style={{ color: "var(--text-secondary)" }}

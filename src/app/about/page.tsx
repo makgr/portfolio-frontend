@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Suspense, type ReactNode } from "react";
 import { getProfile } from "@/lib/api/profile";
 import { getExperiences } from "@/lib/api/experiences";
@@ -19,10 +20,13 @@ import { SkillsSkeleton } from "@/components/skeletons/SkillsSkeleton";
 
 export const revalidate = 0;
 
-export const metadata: Metadata = {
-  title: "About",
-  description: "Professional background, experience, education, the technologies I work with and the team I build with.",
-};
+export function generateMetadata(): Promise<Metadata> {
+  return pageMetadata({
+    title: "About",
+    description: "Professional background, experience, education, the technologies I work with and the team I build with.",
+    path: "/about",
+  });
+}
 
 /*
  * Each section fetches its own data inside a Suspense boundary, so the page

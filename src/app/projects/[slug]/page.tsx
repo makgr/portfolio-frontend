@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProjectBySlug, getProjects } from "@/lib/api/projects";
 import { ProjectDetail } from "@/components/projects/ProjectDetail";
+import { JsonLd } from "@/components/shared/JsonLd";
+import { getProfile } from "@/lib/api/profile";
+import { pageMetadata, metaTags, clip, SITE_URL } from "@/lib/seo";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 
 export const revalidate = 0;
 
@@ -24,22 +28,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const project = await getProjectBySlug(slug);
   if (!project) return { title: "Project Not Found" };
 
-  return {
-    title: project.title,
-    description: project.short_description ?? project.description ?? "",
-    openGraph: {
-      title: project.title,
-      description: project.short_description ?? project.description ?? "",
-      ...(project.featured_image ? { images: [{ url: project.featured_image }] } : {}),
-    },
-  };
+  const meta = metaTags(project.meta_tags);
+  return pageMetadata({
+    title: meta.title ?? project.title,
+    description: meta.description ?? project.short_description ?? project.description,
+    path: `/projects/${project.slug}`,
+    images: [project.featured_image],
+  });
 }
 
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  const [project, profile] = await Promise.all([getProjectBySlug(slug), getProfile().catch(() => null)]);
 
   if (!project) notFound();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: project.title,
+    description: clip(project.short_description ?? project.description, 300),
+    url: `${SITE_URL}/projects/${project.slug}`,
+    ...(project.featured_image ? { image: resolveImageUrl(project.featured_image) } : {}),
+    ...(project.tech_stack?.length ? { keywords: project.tech_stack.join(", ") } : {}),
+    ...(project.published_at ? { datePublished: project.published_at } : {}),
+    ...(profile ? { creator: { "@type": "Person", name: profile.full_name, url: SITE_URL } } : {}),
+  };
 
   return (
     <div
@@ -55,6 +69,7 @@ export default async function ProjectPage({ params }: Props) {
         <span style={{ color: "var(--text-primary)" }}>{project.title}</span>
       </nav>
 
+      <JsonLd data={jsonLd} />
       <ProjectDetail project={project} />
 
       {/* Back link */}

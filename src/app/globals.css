@@ -439,6 +439,9 @@ html.has-cursor button {
   color: #141b27;
   height: 100%;
 }
+.codefield pre::before {
+  content: attr(data-code);
+}
 .codefield .lit {
   position: absolute;
   inset: 0;
