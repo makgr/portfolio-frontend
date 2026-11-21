@@ -1,6 +1,6 @@
-const API_BASE = (
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/personalportfolio/public/api/v1"
-).replace(/\/api\/v\d+$/, "");
+import { API_BASE as API_URL } from "@/lib/api/client";
+
+const API_BASE = API_URL.replace(/\/api\/v\d+$/, "");
 
 /**
  * Resolves a potentially relative image path from the backend into an

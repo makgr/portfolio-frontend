@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { API_BASE } from "@/lib/api/client";
 import { getProfile } from "@/lib/api/profile";
 import { getFeaturedProjects } from "@/lib/api/projects";
 import { getFeaturedTestimonials } from "@/lib/api/testimonials";
@@ -49,10 +50,11 @@ export default async function HomePage() {
       >
         <div className="text-center">
           <p className="text-lg">Could not load profile data.</p>
-          <p className="text-sm mt-2" style={{ color: "var(--text-muted)" }}>
-            Make sure the Laravel API is running at{" "}
-            {process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/personalportfolio/public/api/v1"}
-          </p>
+          {process.env.NODE_ENV === "development" && (
+            <p className="text-sm mt-2" style={{ color: "var(--text-muted)" }}>
+              Make sure the Laravel API is running at {API_BASE}
+            </p>
+          )}
         </div>
       </div>
     );

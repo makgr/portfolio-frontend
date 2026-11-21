@@ -1,6 +1,6 @@
 import { ApiError } from "@/types/api";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost/personalportfolio/public/api/v1";
+export const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000/api/v1";
 
 export type FetchOptions = Omit<RequestInit, "next"> & {
   revalidate?: number | false;
