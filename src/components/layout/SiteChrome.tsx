@@ -80,6 +80,16 @@ const STEPS: [number, string, string, string][] = [
 ];
 const GLYPHS = "!<>-_/[]{}=+*^?#$%&01;:";
 
+const CLICKABLE = "a[href],button,[role='button'],label[for],select,summary,[data-cursor]";
+
+/** Word shown inside the cursor ring over a clickable element. */
+function cursorLabel(el: Element) {
+  const custom = el.getAttribute("data-cursor");
+  if (custom) return custom;
+  if (el.tagName === "A") return el.getAttribute("target") === "_blank" ? "visit ↗" : "open";
+  return "click";
+}
+
 /** Marks the intro as finished so the hero can start its own entrance. */
 function finishIntro() {
   document.documentElement.dataset.intro = "done";
@@ -183,9 +193,11 @@ export function SiteChrome({ name }: { name: string }) {
       root.style.setProperty("--mx", `${mx}px`);
       root.style.setProperty("--my", `${my}px`);
       const t = e.target instanceof Element ? e.target : null;
-      const hit = t?.closest("a,button,[data-cursor]");
-      ring.current?.classList.toggle("on", !!hit);
-      if (label.current) label.current.textContent = hit?.getAttribute("data-cursor") ?? "";
+      const hit = t?.closest(CLICKABLE);
+      const disabled = !!hit?.matches(":disabled,[aria-disabled='true']");
+      root.classList.toggle("cursor-hover", !!hit && !disabled);
+      ring.current?.classList.toggle("on", !!hit && !disabled);
+      if (label.current) label.current.textContent = hit && !disabled ? cursorLabel(hit) : "";
       // local pointer coords for edge-lit cards and spotlight areas; these elements
       // set suppressHydrationWarning since this can run before they hydrate
       const card = t?.closest<HTMLElement>(".glow-card");
@@ -216,7 +228,7 @@ export function SiteChrome({ name }: { name: string }) {
     window.addEventListener("mouseup", up);
     raf = requestAnimationFrame(tick);
     return () => {
-      root.classList.remove("has-cursor");
+      root.classList.remove("has-cursor", "cursor-hover");
       window.removeEventListener("mousemove", move);
       window.removeEventListener("mousedown", down);
       window.removeEventListener("mouseup", up);

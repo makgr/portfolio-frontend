@@ -499,11 +499,23 @@ html.has-cursor .cur-ring {
 }
 .cur-ring.on i {
   transform: scale(2.1);
-  background: rgba(255, 181, 71, 0.13);
+  background: rgba(255, 181, 71, 0.16);
   border-color: rgba(255, 181, 71, 0.95);
+  box-shadow: 0 0 24px rgba(255, 181, 71, 0.35);
+  animation: ring-pulse 1.6s ease-in-out infinite;
+}
+/* over a clickable element the dot gives way to the labelled ring */
+html.cursor-hover .cur-dot {
+  opacity: 0;
+}
+@keyframes ring-pulse {
+  50% { transform: scale(2.25); }
 }
 .cur-ring.down i {
   transform: scale(0.7);
+}
+.cur-ring.down i {
+  animation: none;
 }
 .cur-ring.on.down i {
   transform: scale(1.8);
@@ -522,6 +534,75 @@ html.has-cursor .cur-ring {
 .cur-ring.on .cur-label {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
+}
+
+/* Route-change loader */
+.route-loader {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+.rl-term {
+  width: min(560px, 100%);
+  border: 1px solid var(--border-default);
+  border-radius: 16px;
+  background: var(--bg-tertiary);
+  overflow: hidden;
+  box-shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.8);
+}
+.rl-head {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--bg-secondary);
+  font: 12px var(--font-geist-mono), monospace;
+  color: var(--text-secondary);
+}
+.rl-body {
+  padding: 18px 20px 20px;
+  font: 14px/1.9 var(--font-geist-mono), monospace;
+  color: #c9d3e0;
+}
+.rl-body p {
+  margin: 0;
+}
+.rl-pr {
+  color: var(--accent);
+}
+.rl-ok {
+  color: #3ddc84;
+}
+.rl-play {
+  position: relative;
+  height: 150px;
+  margin: 14px 0 10px;
+  border: 1px dashed var(--border-default);
+  border-radius: 10px;
+  background: repeating-linear-gradient(0deg, transparent 0 23px, rgba(230, 237, 245, 0.03) 23px 24px);
+}
+.rl-bug {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 181, 71, 0.5);
+  background: rgba(255, 181, 71, 0.1);
+  color: var(--accent);
+  font: 500 14px var(--font-geist-mono), monospace;
+  transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1), top 0.6s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s;
+}
+.rl-bug:hover {
+  background: rgba(255, 181, 71, 0.2);
+}
+.rl-bug:active {
+  transform: translate(-50%, -50%) scale(0.9);
+}
+.rl-hint {
+  color: var(--text-muted);
 }
 
 .intro {
@@ -744,5 +825,7 @@ html.has-cursor .cur-ring {
 }
 @media (prefers-reduced-motion: reduce) {
   .intro { display: none; }
+  .cur-ring.on i { animation: none; }
+  .rl-bug { transition: none; }
   .caret, .dot-live { animation: none; }
 }

@@ -17,7 +17,6 @@ export function Footer({ profile }: FooterProps) {
         <span>
           &copy; {year} {name}
         </span>
-        <span className="font-mono text-[var(--text-muted)]">{"// built with Next.js and Laravel"}</span>
       </div>
     </footer>
   );
