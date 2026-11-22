@@ -35,7 +35,7 @@ export function BlogCategoryFilter({ categories }: BlogCategoryFilterProps) {
         className={cn(
           "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200",
           selected === ""
-            ? "text-white"
+            ? "text-[var(--on-accent)]"
             : "border text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         )}
         style={{
@@ -53,7 +53,7 @@ export function BlogCategoryFilter({ categories }: BlogCategoryFilterProps) {
           className={cn(
             "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200",
             selected === cat.slug
-              ? "text-white"
+              ? "text-[var(--on-accent)]"
               : "border text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
           )}
           style={{

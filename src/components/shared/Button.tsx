@@ -30,7 +30,7 @@ type Props = ButtonProps | LinkButtonProps;
 
 const variantStyles: Record<Variant, string> = {
   primary:
-    "bg-[var(--accent)] text-white hover:bg-[var(--accent-light)] shadow-[var(--shadow-glow-sm)] hover:shadow-[var(--shadow-glow-lg)]",
+    "bg-[var(--accent)] text-[var(--on-accent)] hover:bg-[var(--accent-light)] shadow-[var(--shadow-glow-sm)] hover:shadow-[var(--shadow-glow-lg)]",
   ghost:
     "text-[var(--text-primary)] hover:bg-[var(--bg-elevated)] border border-transparent hover:border-[var(--border-hover)]",
   outline:

@@ -10,7 +10,7 @@ interface BadgeProps {
 
 const variantStyles = {
   default: "bg-[var(--bg-elevated)] text-[var(--text-secondary)] border-[var(--border-default)]",
-  accent: "bg-[var(--accent-dim)] text-[var(--accent-light)] border-[rgba(124,58,237,0.3)]",
+  accent: "bg-[var(--accent-dim)] text-[var(--accent-light)] border-[rgba(255,181,71,0.3)]",
   success: "bg-[rgba(34,197,94,0.1)] text-[#22c55e] border-[rgba(34,197,94,0.3)]",
   warning: "bg-[rgba(245,158,11,0.1)] text-[#f59e0b] border-[rgba(245,158,11,0.3)]",
   error: "bg-[rgba(239,68,68,0.1)] text-[#ef4444] border-[rgba(239,68,68,0.3)]",

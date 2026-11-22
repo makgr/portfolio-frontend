@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { getProjects } from "@/lib/api/projects";
 import { getCategoriesByType } from "@/lib/api/categories";
 import { ProjectsGrid } from "@/components/projects/ProjectsGrid";
@@ -7,10 +8,13 @@ import { AnimatedSection } from "@/components/shared/AnimatedSection";
 
 export const revalidate = 0;
 
-export const metadata: Metadata = {
-  title: "Projects",
-  description: "A collection of projects showcasing technical depth and real-world problem solving.",
-};
+export function generateMetadata(): Promise<Metadata> {
+  return pageMetadata({
+    title: "Projects",
+    description: "A collection of projects showcasing technical depth and real-world problem solving.",
+    path: "/projects",
+  });
+}
 
 export default async function ProjectsPage() {
   const [projects, categories] = await Promise.allSettled([
@@ -28,6 +32,7 @@ export default async function ProjectsPage() {
     >
       <AnimatedSection className="mb-12">
         <SectionTitle
+          as="h1"
           label="Portfolio"
           title={
             <>

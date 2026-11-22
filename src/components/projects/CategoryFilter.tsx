@@ -19,7 +19,7 @@ export function CategoryFilter({ categories, selected, onChange }: CategoryFilte
         className={cn(
           "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
           selected === ""
-            ? "text-white shadow-[var(--shadow-glow-sm)]"
+            ? "text-[var(--on-accent)] shadow-[var(--shadow-glow-sm)]"
             : "border text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)]"
         )}
         style={{
@@ -37,7 +37,7 @@ export function CategoryFilter({ categories, selected, onChange }: CategoryFilte
           className={cn(
             "px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
             selected === cat.slug
-              ? "text-white shadow-[var(--shadow-glow-sm)]"
+              ? "text-[var(--on-accent)] shadow-[var(--shadow-glow-sm)]"
               : "border text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-hover)]"
           )}
           style={{

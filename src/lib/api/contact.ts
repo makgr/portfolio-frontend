@@ -18,7 +18,6 @@ export async function submitContact(
   const res = await apiFetch<ApiResponse<ContactResponse>>("/contact", {
     method: "POST",
     body: JSON.stringify(payload),
-    revalidate: false,
   });
   return {
     success: res.success,
@@ -35,7 +34,6 @@ export async function subscribeNewsletter(
     {
       method: "POST",
       body: JSON.stringify(payload),
-      revalidate: false,
     }
   );
   return {
@@ -50,7 +48,6 @@ export async function unsubscribeNewsletter(
   const res = await apiFetch<ApiResponse<null>>("/newsletter/unsubscribe", {
     method: "POST",
     body: JSON.stringify({ email }),
-    revalidate: false,
   });
   return {
     success: res.success,
