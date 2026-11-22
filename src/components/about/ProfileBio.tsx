@@ -17,7 +17,7 @@ export function ProfileBio({ profile }: ProfileBioProps) {
 
   return (
     <AnimatedSection>
-      <div className="flex flex-col md:flex-row gap-10 items-start">
+      <div className="flex flex-col md:flex-row gap-10 items-center md:items-start">
         {/* Avatar */}
         {(profile.avatar_url || profile.hero_image_url) && (
           <div className="flex-shrink-0">
@@ -41,7 +41,7 @@ export function ProfileBio({ profile }: ProfileBioProps) {
         )}
 
         {/* Bio */}
-        <div className="flex-1">
+        <div className="flex-1 w-full">
           <h1
             className="text-display-md font-bold mb-2"
             style={{ color: "var(--text-primary)" }}

@@ -56,7 +56,7 @@ export function ContactInfo({ profile }: ContactInfoProps) {
       }[];
 
   return (
-    <div>
+    <div className="text-center lg:text-left">
       <h1
         className="text-display-sm font-bold mb-3"
         style={{ color: "var(--text-primary)" }}
@@ -72,7 +72,7 @@ export function ContactInfo({ profile }: ContactInfoProps) {
       </p>
 
       {info.length > 0 && (
-        <div className="space-y-4 mb-8">
+        <div className="space-y-4 mb-8 w-fit mx-auto lg:mx-0 text-left">
           {info.map((item) => (
             <div key={item.key} className="flex items-center gap-3">
               <div
@@ -97,7 +97,7 @@ export function ContactInfo({ profile }: ContactInfoProps) {
         <p className="text-xs font-medium mb-3 text-label" style={{ color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.06em", fontSize: "0.75rem" }}>
           Find me online
         </p>
-        <SocialLinks links={socialLinks} size="lg" />
+        <SocialLinks links={socialLinks} size="lg" className="justify-center lg:justify-start" />
       </div>
     </div>
   );

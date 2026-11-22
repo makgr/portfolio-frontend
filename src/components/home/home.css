@@ -223,6 +223,8 @@
   }
   @media (max-width: 680px) {
     .wrap { padding: 0 20px; }
+    .ctas { justify-content: center; }
+    .b-stats { text-align: center; }
     .sec { padding: 72px 0; }
     .bento > * { grid-column: span 12; }
     .proj-grid { grid-template-columns: minmax(0, 1fr); }
