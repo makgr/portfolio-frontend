@@ -5,6 +5,12 @@ A personal portfolio website built with **Next.js 16**, **React 19**, **Tailwind
 All content comes from a separate Laravel backend:
 **[makgr/personalportfolio](https://github.com/makgr/personalportfolio)**. Nothing about the portfolio owner is hardcoded here, so you can fork this repo, point it at your own backend and get your own site.
 
+## Preview
+
+![Site walkthrough: home page, projects, project detail, blog, blog post, about, services and contact](docs/screenshots/site-walkthrough.gif)
+
+Home page (hero, featured work and the sections below it), projects, a project detail page, the blog, a blog post, about, services and contact.
+
 ## Features
 
 - Home page with hero, stats, featured projects, skills, services, experience, testimonials and latest posts
@@ -36,9 +42,42 @@ Open <http://localhost:3000>.
 | Variable | Description | Example |
 | --- | --- | --- |
 | `NEXT_PUBLIC_API_URL` | Base URL of the backend API, including `/api/v1` | `http://localhost:8000/api/v1` |
-| `NEXT_PUBLIC_SITE_URL` | Public URL of this frontend, used for SEO metadata | `https://example.com` |
+| `NEXT_PUBLIC_SITE_URL` | Public URL of this frontend, used for SEO metadata (canonical, Open Graph, sitemap) | `https://example.com` |
+| `API_CACHE_SECONDS` | How long API responses stay cached, in seconds (default `300`) | `300` |
+| `REVALIDATE_SECRET` | Shared secret the backend sends to `POST /api/revalidate` | a long random string |
 
 Images whose paths come back relative are loaded from the backend host (`NEXT_PUBLIC_API_URL` minus `/api/v1`).
+
+## Deployment
+
+The site runs on any host that supports Next.js (Vercel, Netlify, or a Node server with `npm run build && npm run start`).
+
+1. Deploy the [backend](https://github.com/makgr/personalportfolio) first and check that `https://<backend>/api/v1/profile` returns JSON.
+2. Set the environment variables above on your host. For example:
+
+   ```env
+   NEXT_PUBLIC_API_URL=https://admin.example.com/api/v1
+   NEXT_PUBLIC_SITE_URL=https://example.com
+   API_CACHE_SECONDS=300
+   REVALIDATE_SECRET=<long random string>
+   ```
+
+3. Build and deploy. `NEXT_PUBLIC_*` values are baked in at build time, so **rebuild after changing them**.
+4. The contact form and newsletter post to the backend from the browser, so the backend's CORS settings must allow your frontend domain.
+
+### Show admin edits right away (optional)
+
+API responses are cached for `API_CACHE_SECONDS`. To make edits in the admin panel show up at once, have the backend call this endpoint after it saves something:
+
+```http
+POST https://example.com/api/revalidate
+x-revalidate-secret: <REVALIDATE_SECRET>
+Content-Type: application/json
+
+{ "tags": ["projects", "profile"] }
+```
+
+Tags match the backend resources: `profile`, `projects`, `blog-posts`, `categories`, `services`, `skills`, `experiences`, `education`, `training`, `teams`, `testimonials`, `settings`. The backend must use the same secret as the frontend.
 
 ## Scripts
 
