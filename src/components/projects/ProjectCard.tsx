@@ -71,9 +71,9 @@ export function ProjectCard({ project, index = 0 }: ProjectCardProps) {
             {/* Overlay on hover */}
             <div
               className="absolute inset-0 opacity-0 hover:opacity-100 flex items-center justify-center transition-opacity duration-300"
-              style={{ background: "rgba(124,58,237,0.7)" }}
+              style={{ background: "rgba(255,181,71,0.7)" }}
             >
-              <span className="text-white font-medium text-sm">View Project →</span>
+              <span className="text-[var(--on-accent)] font-medium text-sm">View Project →</span>
             </div>
           </div>
 

@@ -38,6 +38,8 @@ export interface Profile {
   location?: string;
   avatar_url?: string;
   hero_image_url?: string;
+  /** Portrait on a dark or transparent background for the home hero. */
+  hero_cutout_url?: string;
   resume_url?: string;
   years_of_experience?: number;
   total_projects?: number;

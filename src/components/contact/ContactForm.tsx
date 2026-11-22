@@ -241,7 +241,7 @@ export function ContactForm() {
         <button
           type="submit"
           disabled={status === "loading"}
-          className="w-full py-3 rounded-[var(--radius-button)] text-sm font-medium text-white transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-[var(--radius-button)] text-sm font-medium text-[var(--on-accent)] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           style={{ background: "var(--accent)" }}
         >
           {status === "loading" ? (

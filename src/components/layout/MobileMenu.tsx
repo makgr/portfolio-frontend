@@ -79,7 +79,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               <Link
                 href="/contact"
                 onClick={onClose}
-                className="w-full flex items-center justify-center px-4 py-2.5 rounded-lg font-medium text-sm text-white transition-all duration-200"
+                className="w-full flex items-center justify-center px-4 py-2.5 rounded-lg font-medium text-sm text-[var(--on-accent)] transition-all duration-200"
                 style={{ background: "var(--accent)" }}
               >
                 Let&apos;s Talk
