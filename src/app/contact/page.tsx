@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { getProfile } from "@/lib/api/profile";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { ContactInfo } from "@/components/contact/ContactInfo";
 
-export const metadata: Metadata = {
-  title: "Contact",
-  description: "Get in touch for project inquiries, collaborations, or just to say hello.",
-};
+export function generateMetadata(): Promise<Metadata> {
+  return pageMetadata({
+    title: "Contact",
+    description: "Get in touch for project inquiries, collaborations, or just to say hello.",
+    path: "/contact",
+  });
+}
 
 export default async function ContactPage() {
   let profile = null;

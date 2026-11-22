@@ -1,20 +1,34 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { SiteChrome } from "@/components/layout/SiteChrome";
+import { clip, metaTags } from "@/lib/seo";
+import { resolveImageUrl } from "@/lib/utils/imageUrl";
 import { getProfile } from "@/lib/api/profile";
-import { getSettings } from "@/lib/api/settings";
+import { getSettings, isMaintenanceMode } from "@/lib/api/settings";
+import { MaintenanceView } from "@/components/layout/MaintenanceView";
 import type { ReactNode } from "react";
 
-const inter = Inter({
+const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-geist",
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
   display: "swap",
 });
 
 export async function generateMetadata(): Promise<Metadata> {
+  // Keep the maintenance page out of search results.
+  if (await isMaintenanceMode()) {
+    return { title: "Back soon", robots: { index: false, follow: false } };
+  }
   try {
     const [profile, settings] = await Promise.all([
       getProfile(),
@@ -26,14 +40,19 @@ export async function generateMetadata(): Promise<Metadata> {
       settings?.seo?.site_name ??
       profile.full_name ??
       "Portfolio";
-    const description =
+    // Most specific first: the generic site_description ("This is a personal
+    // portfolio site.") only wins when nothing better is filled in.
+    const description = clip(
       settings?.seo?.meta_description ??
-      settings?.general?.site_description ??
-      profile.short_bio ??
-      profile.bio ??
-      "Personal portfolio website";
-    const ogImage =
-      settings?.seo?.og_image ?? profile.hero_image_url ?? profile.avatar_url;
+        metaTags(profile.meta_tags).description ??
+        profile.short_bio ??
+        settings?.general?.site_description ??
+        profile.bio ??
+        "Personal portfolio website"
+    );
+    const ogImage = resolveImageUrl(
+      settings?.seo?.og_image ?? metaTags(profile.meta_tags).og_image ?? profile.hero_image_url ?? profile.avatar_url
+    );
 
     return {
       metadataBase: new URL(
@@ -67,24 +86,6 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-function ThemeScript() {
-  const script = `
-    (function() {
-      try {
-        var stored = localStorage.getItem('portfolio-theme');
-        var preferred = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-        if (preferred === 'light') document.documentElement.classList.add('light');
-      } catch(e) {}
-    })();
-  `;
-  return (
-    <script
-      dangerouslySetInnerHTML={{ __html: script }}
-      suppressHydrationWarning
-    />
-  );
-}
-
 export default async function RootLayout({
   children,
 }: {
@@ -96,18 +97,28 @@ export default async function RootLayout({
   } catch {
     // Profile fetch failed — layout still renders
   }
+  const maintenance = await isMaintenanceMode();
 
   return (
-    <html lang="en" suppressHydrationWarning className={inter.variable}>
-      <head>
-        <ThemeScript />
-      </head>
-      <body className="flex flex-col min-h-screen" style={{ fontFamily: "var(--font-inter), Inter, system-ui, sans-serif" }}>
-        <Header />
-        <main className="flex-1 pt-20">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <Footer profile={profile} />
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+      className={`${geist.variable} ${geistMono.variable}`}
+    >
+      <body className="flex flex-col min-h-screen">
+        <SiteChrome name={profile?.full_name ?? "Portfolio"} intro={!maintenance} />
+        {maintenance ? (
+          <MaintenanceView profile={profile} />
+        ) : (
+          <>
+            <Header />
+            <main className="flex-1 pt-20">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <Footer profile={profile} />
+          </>
+        )}
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { Suspense } from "react";
 import { getBlogPosts } from "@/lib/api/blog";
 import { getCategoriesByType } from "@/lib/api/categories";
@@ -13,10 +14,13 @@ interface Props {
   searchParams: Promise<{ search?: string; category?: string; page?: string }>;
 }
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description: "Articles on software engineering, architecture, and lessons from real-world projects.",
-};
+export function generateMetadata(): Promise<Metadata> {
+  return pageMetadata({
+    title: "Blog",
+    description: "Articles on software engineering, architecture, and lessons from real-world projects.",
+    path: "/blog",
+  });
+}
 
 export default async function BlogPage({ searchParams }: Props) {
   const sp = await searchParams;
@@ -55,6 +59,7 @@ export default async function BlogPage({ searchParams }: Props) {
     >
       <AnimatedSection className="mb-12">
         <SectionTitle
+          as="h1"
           label="Writing"
           title={
             <>

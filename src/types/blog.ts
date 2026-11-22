@@ -24,6 +24,7 @@ export interface BlogPost {
   views?: number;
   likes?: number;
   published_at?: string;
+  updated_at?: string;
 }
 
 export interface BlogFilter {

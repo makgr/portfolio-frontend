@@ -1,9 +1,10 @@
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
+  { label: "Services", href: "/services" },
   { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  // Contact lives on the "Let's talk" button in the header and mobile menu
 ] as const;
 
 export const SITE_NAME = "Portfolio";

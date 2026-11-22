@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { SocialLinks } from "@/components/shared/SocialLinks";
-import { NAV_LINKS } from "@/lib/utils/constants";
 import type { Profile } from "@/types/profile";
-import { Divider } from "@/components/shared/Divider";
+import { SocialLinks } from "@/components/shared/SocialLinks";
+import { CopyEmailButton } from "@/components/home/CopyEmailButton";
+import { LocalClock } from "@/components/home/LocalClock";
+import { BackToTop } from "./BackToTop";
 
 interface FooterProps {
   profile?: Profile | null;
@@ -11,64 +11,45 @@ interface FooterProps {
 export function Footer({ profile }: FooterProps) {
   const year = new Date().getFullYear();
   const name = profile?.full_name ?? "Developer";
-  const socialLinks = {
-    ...(profile?.social_links ?? {}),
-    ...(profile?.site_info?.social ?? {}),
-  };
+  const email = profile?.email ?? profile?.site_info?.contact?.email;
+  const social = { ...(profile?.social_links ?? {}), ...(profile?.site_info?.social ?? {}) };
 
   return (
-    <footer
-      className="mt-auto"
-      style={{ borderTop: "1px solid var(--border-default)", background: "var(--bg-secondary)" }}
-    >
+    <footer className="mt-auto">
       <div
-        className="mx-auto px-6 py-12"
-        style={{ maxWidth: "var(--max-width-container)" }}
+        className="mx-auto px-5 sm:px-10 pt-8 pb-9 text-sm text-[var(--text-secondary)]"
+        style={{ maxWidth: 1320, borderTop: "1px solid var(--border-default)" }}
       >
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
-          {/* Brand */}
-          <div>
-            <Link
-              href="/"
-              className="font-semibold text-[var(--text-primary)] text-lg tracking-tight"
-            >
-              <span style={{ color: "var(--accent)" }}>&lt;</span>
-              {name.split(" ")[0]}
-              <span style={{ color: "var(--accent)" }}>/&gt;</span>
-            </Link>
-            <p className="mt-2 text-sm text-[var(--text-muted)] max-w-xs">
-              {profile?.short_bio ?? `Building modern web experiences.`}
-            </p>
-          </div>
-
-          {/* Nav */}
-          <nav className="flex flex-wrap gap-x-6 gap-y-2" aria-label="Footer navigation">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Social */}
-          <SocialLinks links={socialLinks} size="md" />
+        <div className="flex flex-wrap items-center justify-between gap-5">
+          <span>
+            &copy; {year} {name}
+          </span>
+          <span className="font-mono text-[var(--text-muted)]">
+            {"// "}
+            {profile?.location ?? "Remote"}
+            <LocalClock />
+            {/* shortcut: availability is fixed text; add profile.is_available to drive it from the API */}
+            <span className="inline-flex items-center gap-2 ml-1">
+              , <span className="dot-live" aria-hidden="true" /> open to new projects
+            </span>
+          </span>
+          <BackToTop />
         </div>
 
-        <Divider className="my-8" />
-
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
-          <p>
-            &copy; {year} {name}. All rights reserved.
-          </p>
-          <p>
-            Built with{" "}
-            <span style={{ color: "var(--accent-light)" }}>Next.js</span> &amp;{" "}
-            <span style={{ color: "var(--accent-light)" }}>Laravel</span>
-          </p>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-5">
+          <div className="flex flex-wrap items-center gap-5">
+            {email && (
+              <CopyEmailButton
+                email={email}
+                label={email}
+                className="font-mono text-[var(--text-primary)] hover:text-[var(--accent)] transition-colors min-h-11"
+              />
+            )}
+            <SocialLinks links={social} size="sm" />
+          </div>
+          {process.env.BUILD_DATE && (
+            <span className="font-mono text-[var(--text-muted)]">{`// last deployed ${process.env.BUILD_DATE}`}</span>
+          )}
         </div>
       </div>
     </footer>
