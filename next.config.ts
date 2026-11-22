@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // self-contained .next/standalone/server.js for hosts without npm install (cPanel)
+  output: "standalone",
   env: {
     // shown in the footer as "last deployed"
     BUILD_DATE: new Date().toISOString().slice(0, 10),
