@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -98,6 +99,10 @@ export default async function RootLayout({
     // Profile fetch failed — layout still renders
   }
   const maintenance = await isMaintenanceMode();
+  // Backend may send a bare ID or the whole gtag snippet; keep only a valid ID so no raw HTML reaches the page.
+  const gaId = await getSettings()
+    .then((s) => s.seo?.google_analytics?.match(/\b(G|GT|AW)-[A-Z0-9]+\b/)?.[0])
+    .catch(() => undefined);
 
   return (
     <html
@@ -120,6 +125,14 @@ export default async function RootLayout({
           </>
         )}
       </body>
+      {gaId && (
+        <>
+          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
+          <Script id="ga" strategy="afterInteractive">
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${gaId}');`}
+          </Script>
+        </>
+      )}
     </html>
   );
 }
