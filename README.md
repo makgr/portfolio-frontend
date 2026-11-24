@@ -65,6 +65,20 @@ The site runs on any host that supports Next.js (Vercel, Netlify, or a Node serv
 3. Build and deploy. `NEXT_PUBLIC_*` values are baked in at build time, so **rebuild after changing them**.
 4. The contact form and newsletter post to the backend from the browser, so the backend's CORS settings must allow your frontend domain.
 
+### Build a deploy package (standalone)
+
+To build locally and upload the result to a Node host, run from the project root:
+
+```bash
+rm -rf .next deploy.tar.gz
+NEXT_PUBLIC_API_URL=https://<backend-domain>/api/v1 NEXT_PUBLIC_SITE_URL=https://<frontend-domain> npm run build
+cp -r public .next/standalone/
+cp -r .next/static .next/standalone/.next/
+tar -czf deploy.tar.gz -C .next/standalone .
+```
+
+Upload `deploy.tar.gz` to the server, extract it into the app folder, and restart the app (`node server.js`). The URLs given inline override `.env.local`, so the package points at the live backend.
+
 ### Show admin edits right away (optional)
 
 API responses are cached for `API_CACHE_SECONDS`. To make edits in the admin panel show up at once, have the backend call this endpoint after it saves something:
